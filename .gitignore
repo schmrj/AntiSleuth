@@ -1,0 +1,7 @@
+*.jks
+/bin
+/target
+.settings
+*.class
+/build
+.classpath
