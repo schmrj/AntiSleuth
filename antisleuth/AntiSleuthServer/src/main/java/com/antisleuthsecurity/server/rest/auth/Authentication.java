@@ -20,6 +20,13 @@ public class Authentication extends AsRestApi {
 
 	}
 
+	/**
+	 * Consume a {@link RegistrationRequest} in order to register a new user
+	 * 
+	 * @param {@link RegistrationRequest} to consume
+	 * @return {@link RegistrationResponse} containing results pertaining to the
+	 *         regsitration attempt
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +43,14 @@ public class Authentication extends AsRestApi {
 		return response;
 	}
 
+	/**
+	 * Consume a {@link LoginRequest} in order to attempt to authenticate a
+	 * user.
+	 * 
+	 * @param {@link LoginRequest} to consume
+	 * @return {@link LoginResponse} containing information pertaining to the
+	 *         login attempt
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
