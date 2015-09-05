@@ -143,5 +143,6 @@
 	</repositories>
 	<modules>
 		<module>AntiSleuthSecurity</module>
+		<module>AntiSleuthServer</module>
 	</modules>
 </project>
