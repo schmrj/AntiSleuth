@@ -18,22 +18,22 @@ public class ASServer extends ServletContainer {
 	public static MSSQL sql = null;
 
 	private ASystem system = new ASystem();
-	
+
 	public void init() throws ServletException {
 		super.init();
 		ASLog.info("Starting AntiSleuth Security Server");
 		ASLog.info("Initializing the server properties");
 		this.props = new Properties(this.getServletContext(),
 				this.getServletConfig());
-		
-		try{
+
+		try {
 			this.keyThread = new KeyManagementThread();
 			ASLog.info("Starting Key Management Thread");
-			this.keyThread.start();
-			synchronized (this.keyThread) {
-				this.keyThread.wait();
-			}
-		}catch(Exception e){
+			// this.keyThread.start();
+			// synchronized (this.keyThread) {
+			// this.keyThread.wait();
+			// }
+		} catch (Exception e) {
 			ASLog.fatal("Could not generate required keys", e);
 			System.exit(1);
 		}
@@ -49,7 +49,8 @@ public class ASServer extends ServletContainer {
 		int sleepTime = Integer.parseInt(DBConstants.RETRY_DELAY);
 
 		try {
-			ASLog.debug("Attempting to connect to database: " + DBConstants.DATABASE);
+			ASLog.debug("Attempting to connect to database: "
+					+ DBConstants.DATABASE);
 			this.sql.connect();
 			ASLog.debug("Connected to database: " + DBConstants.DATABASE);
 		} catch (Exception e) {

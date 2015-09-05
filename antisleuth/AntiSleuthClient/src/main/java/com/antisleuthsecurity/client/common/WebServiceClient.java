@@ -1,5 +1,7 @@
 package com.antisleuthsecurity.client.common;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -27,6 +29,7 @@ public class WebServiceClient {
 	        if(!stateless)
 				config.getProperties().put(ApacheHttpClientConfig.PROPERTY_HANDLE_COOKIES, true);
 	        config.getClasses().add(MultiPartWriter.class);
+	        config.getClasses().add(JacksonJsonProvider.class);
 	        Client client = ApacheHttpClient.create(config);
 	        client.setFollowRedirects(true);
 	        WebResource resource = client.resource(connectionUrl);

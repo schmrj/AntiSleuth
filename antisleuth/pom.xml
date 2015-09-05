@@ -13,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jersey.version>1.19</jersey.version>
+		<jackson.version>1.9.2</jackson.version>
 	</properties>
 
 	<dependencies>
@@ -52,12 +53,12 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
-			<version>1.8.5</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.8.5</version>
+			<version>${jackson.version}</version>
 		</dependency>
 		<!-- End Jackson Dependencies -->
 
@@ -145,5 +146,6 @@
 		<module>AntiSleuthSecurity</module>
 		<module>AntiSleuthServer</module>
 		<module>AntiSleuthClient</module>
+		<module>ASClientIntegrationTests</module>
 	</modules>
 </project>

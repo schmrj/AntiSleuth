@@ -3,16 +3,16 @@ package com.antisleuthsecurity.asc_api.rest;
 import java.io.Serializable;
 
 public class UserAccount implements Serializable {
-	private String userId = null;
+	private Integer userId = null;
 	private String username = null;
 	private char[] password = null;
 	private String emailAddress = null;
 
-	public String getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 

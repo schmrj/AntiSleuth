@@ -1,6 +1,5 @@
 package com.antisleuthsecurity.asc_api.utilities;
 
-import org.bouncycastle.util.encoders.UrlBase64;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class GeneralUtils {

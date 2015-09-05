@@ -1,6 +1,8 @@
-package com.antisleuthsecurity.asc_api.rest;
+package com.antisleuthsecurity.asc_api.rest.requests;
 
 import java.io.Serializable;
+
+import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
 public class RegistrationRequest implements Serializable {
 	private UserAccount account = null;

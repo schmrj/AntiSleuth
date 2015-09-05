@@ -5,9 +5,9 @@
 <web-app>
 	<display-name>AntiSleuth Security Server</display-name>
 	<!-- Filters Begin -->
-	
+
 	<!-- Filters End Begin -->
-	
+
 	<servlet>
 		<servlet-name>AntiSleuth Cryptographic Server API</servlet-name>
 		<!-- <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
@@ -53,7 +53,10 @@
 		<!-- END DATABASE PARAMETERS -->
 
 		<!-- Session Key Parameters -->
-
+		<init-param>
+			<param-name>session.generateKeys</param-name>
+			<param-value>false</param-value>
+		</init-param>
 		<init-param>
 			<param-name>session.keyStrength</param-name>
 			<param-value>4096</param-value>
@@ -68,6 +71,10 @@
 		</init-param>
 
 		<!-- End Session Key Parameters -->
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
 
 		<load-on-startup>1</load-on-startup>
 	</servlet>

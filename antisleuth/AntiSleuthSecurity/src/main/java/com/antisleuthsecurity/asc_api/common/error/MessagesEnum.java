@@ -5,9 +5,10 @@ import java.io.Serializable;
 public enum MessagesEnum implements Serializable {
 	
 	// 1 000 000 - 1 009 999 = Generic System Messages
-	SYSTEM_ERROR (1000000, MessageType.ERROR, "System Error, please see logs");
+	SYSTEM_ERROR (1000000, MessageType.ERROR, "System Error, please see logs"),
 	
 	// 2 000 000 - 2 009 999 = Account / Registration Messages
+	REGISTRATION_FAILED (2000001, MessageType.ERROR, "Could not register user");
 	
 	// 3 000 000 - 3 009 999 = Validation Messages
 	
