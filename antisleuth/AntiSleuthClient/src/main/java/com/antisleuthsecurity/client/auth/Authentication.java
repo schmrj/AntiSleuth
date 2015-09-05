@@ -24,9 +24,10 @@ public class Authentication {
 					.post(ClientResponse.class, request);
 
 			if (response.getStatus() == 200) {
-				RegistrationResponse regResponse = response.getEntity(RegistrationResponse.class);
-				UserAccount account = regResponse.getUserAccount();
-				System.out.println("Received: " + regResponse.getResponseClass());
+				String stringResponse = response.getEntity(String.class);
+//				RegistrationResponse regResponse = response.getEntity(RegistrationResponse.class);
+//				UserAccount account = regResponse.getUserAccount();
+				System.out.println("Received: " + stringResponse);
 			} else {
 				throw new AscException("Invalid Response: "
 						+ response.getStatus() + " "

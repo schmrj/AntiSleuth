@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
