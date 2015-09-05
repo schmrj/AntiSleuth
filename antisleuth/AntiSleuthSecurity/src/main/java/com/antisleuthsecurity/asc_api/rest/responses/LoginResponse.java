@@ -1,12 +1,11 @@
-package com.antisleuthsecurity.asc_api.rest.requests;
+package com.antisleuthsecurity.asc_api.rest.responses;
 
-import java.io.Serializable;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
-public class RegistrationRequest implements Serializable {
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+public class LoginResponse extends ASResponse {
 
 	private static final long serialVersionUID = 5092015L; // 05 Sep 2015
 	private UserAccount account = null;

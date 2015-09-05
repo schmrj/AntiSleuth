@@ -2,7 +2,10 @@ package com.antisleuthsecurity.client.auth;
 
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
+import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
+import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.client.common.WebServiceClient;
 import com.sun.jersey.api.client.WebResource;
 
@@ -23,6 +26,12 @@ public class AuthenticationTest {
 		
 		System.out.println("Attempting to send Registration Request");
 		Authentication auth = new Authentication();
-		auth.registerUser(regRequest, resource);
+		RegistrationResponse regResponse = auth.registerUser(regRequest, resource);
+		
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setAccount(account);
+		LoginResponse response = auth.login(loginRequest, resource);
+		
+		System.out.println("Finished");
 	}
 }

@@ -6,6 +6,7 @@ public enum MessagesEnum implements Serializable {
 	
 	// 1 000 000 - 1 009 999 = Generic System Messages
 	SYSTEM_ERROR (1000000, MessageType.ERROR, "System Error, please see logs"),
+	METHOD_NOT_IMPLEMENTED (1000001, MessageType.ERROR, "Method requested has not been implemented"),
 	
 	// 2 000 000 - 2 009 999 = Account / Registration Messages
 	REGISTRATION_FAILED (2000001, MessageType.ERROR, "Could not register user");
