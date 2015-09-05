@@ -4,7 +4,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.antisleuthsecurity.asc_api.cryptography.ciphers.builders.AesCipherBuilder;
@@ -22,7 +22,7 @@ public class AesCipherBuilderTest {
 				.setEncrypt()
 				.build();
 		
-		Assert.assertNotNull(cipher);
+		assertNotNull(cipher);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class AesCipherBuilderTest {
 				.setDecrypt()
 				.build();
 		
-		Assert.assertNotNull(cipher);
+		assertNotNull(cipher);
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class AesCipherBuilderTest {
 				.setInitializationVector(new byte[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 })
 				.setKey(new byte[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 })
 				.build();
-		Assert.assertNotNull(cipher);
+		assertNotNull(cipher);
 	}
 	
 	@Test
@@ -52,17 +52,17 @@ public class AesCipherBuilderTest {
 				.setStrength(Strength.S128)
 				.setEncrypt()
 				.build();
-		Assert.assertNotNull(cipher);
+		assertNotNull(cipher);
 		
-		String toEncrypt = "This is a test string!";
+		String toEncrypt = "This is a test string!"; 
 		Cipher realCipher = cipher.getCipher();
 		
 		byte[] encrypted = realCipher.doFinal(toEncrypt.getBytes());
-		Assert.assertNotEquals(toEncrypt, new String(encrypted));
+		assertNotEquals(toEncrypt, new String(encrypted));
 		
 		realCipher = cipher.getCipher(Cipher.DECRYPT_MODE);
 		
 		byte[] decrypted = realCipher.doFinal(encrypted);
-		Assert.assertEquals(toEncrypt, new String(decrypted));
+		assertEquals(toEncrypt, new String(decrypted));
 	}
 }
