@@ -16,10 +16,11 @@ import org.apache.log4j.PropertyConfigurator;
  * @author Bobby
  */
 public class ASLog {
-    private final static Logger logger = LogManager.getLogger("AntiSleuth");
+    private static Logger logger = LogManager.getLogger("AntiSleuth");
     
-    public ASLog(){
+    public ASLog(String logName){
     	init();
+    	logger = LogManager.getLogger("AntiSleuth " + logName);
     }
     
     public static enum LEVELS{

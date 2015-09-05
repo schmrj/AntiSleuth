@@ -6,13 +6,11 @@
 
 	<parent>
 		<groupId>com.antisleuthsecurity</groupId>
-		<artifactId>antisleuth</artifactId>
+		<artifactId>antisleuthparent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.antisleuthsecurity</groupId>
 	<artifactId>AntiSleuthServer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>AntiSleuthServer Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -26,12 +24,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.antisleuthsecurity</groupId>
-			<artifactId>antisleuthsecurityapi</artifactId>
+			<artifactId>AntiSleuthSecurity</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<finalName>AntiSleuthServer</finalName>
-	</build>
 </project>

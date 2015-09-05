@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.antisleuthsecurity</groupId>
-	<artifactId>antisleuth</artifactId>
+	<artifactId>antisleuthparent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -144,5 +144,6 @@
 	<modules>
 		<module>AntiSleuthSecurity</module>
 		<module>AntiSleuthServer</module>
+		<module>AntiSleuthClient</module>
 	</modules>
 </project>
