@@ -11,7 +11,6 @@ public abstract class ASResponse implements Serializable {
 
 	protected boolean success = false;
 	protected TreeMap<Integer, String> messages = new TreeMap<Integer, String>();
-	protected Object response = null;
 	protected Class<?> responseClass = null;
 
 	public boolean isSuccess() {
@@ -32,12 +31,6 @@ public abstract class ASResponse implements Serializable {
 
 	public void addMessage(MessagesEnum message) {
 		this.messages.put(message.getMessageId(), message.getMessage());
-	}
-
-	public abstract <T> T getResponse();
-
-	public void setResponse(Object response) {
-		this.response = response;
 	}
 
 	public Class<?> getResponseClass() {

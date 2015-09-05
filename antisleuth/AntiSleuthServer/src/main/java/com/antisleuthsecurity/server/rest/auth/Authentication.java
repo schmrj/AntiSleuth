@@ -31,7 +31,7 @@ public class Authentication extends AsRestApi{
 			response.setSuccess(false);
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
 			response.addMessage(MessagesEnum.REGISTRATION_FAILED);
-			response.setResponse(requestString.getAccount());
+			response.setUserAccount(requestString.getAccount());
 			response.setResponseClass(requestString.getAccount().getClass());
 			
 		}catch(Exception e){

@@ -19,15 +19,13 @@ public class Authentication {
 			WebResource resource) throws AscException {
 
 		try {
-//			String jsonString = new GeneralUtils().createJsonString(request);
-
 			ClientResponse response = resource.path("/auth/register")
 					.type(MediaType.APPLICATION_JSON)
 					.post(ClientResponse.class, request);
 
 			if (response.getStatus() == 200) {
 				RegistrationResponse regResponse = response.getEntity(RegistrationResponse.class);
-				UserAccount account = regResponse.getResponse();
+				UserAccount account = regResponse.getUserAccount();
 				System.out.println("Received: " + regResponse.getResponseClass());
 			} else {
 				throw new AscException("Invalid Response: "

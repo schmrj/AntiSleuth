@@ -19,7 +19,7 @@ public class ASResponseTest {
 		
 		RegistrationResponse response = new RegistrationResponse();
 		response.setSuccess(true);
-		response.setResponse(account);
+		response.setUserAccount(account);
 		
 		assertTrue(response.isSuccess());
 	}
