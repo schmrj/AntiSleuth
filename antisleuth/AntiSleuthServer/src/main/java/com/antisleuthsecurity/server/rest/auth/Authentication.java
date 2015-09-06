@@ -21,7 +21,8 @@ import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.antisleuthsecurity.server.ASServer;
 import com.antisleuthsecurity.server.rest.AsRestApi;
-import com.antisleuthsecurity.server.rest.validation.AccountValidator;
+import com.antisleuthsecurity.server.rest.validation.LoginValidator;
+import com.antisleuthsecurity.server.rest.validation.NewAccountValidator;
 
 @Path("/auth")
 public class Authentication extends AsRestApi {
@@ -41,51 +42,55 @@ public class Authentication extends AsRestApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/register")
-	public RegistrationResponse register(RegistrationRequest registrationRequest) {
+	public RegistrationResponse register(RegistrationRequest request) {
 		RegistrationResponse response = new RegistrationResponse();
 		try {
-			AccountValidator av = new AccountValidator(
-					registrationRequest.getAccount());
-			Message[] messages = av.getReasons();
+			if (request != null) {
+				NewAccountValidator av = new NewAccountValidator(
+						request.getAccount());
+				Message[] messages = av.getReasons();
 
-			if (av.isValid()) {
-				UserAccount account = registrationRequest.getAccount();
-				String[] accountParams = new String[] {
-						account.getUsername(),
-						new String(Base64.encode(new String(account
-								.getPassword()).getBytes())),
-						new String(Base64.encode(account.getSalt().getBytes())) };
+				if (av.isValid()) {
+					UserAccount account = request.getAccount();
+					String[] accountParams = new String[] {
+							account.getUsername(),
+							new String(Base64.encode(new String(account
+									.getPassword()).getBytes())),
+							new String(Base64.encode(account.getSalt()
+									.getBytes())) };
 
-				// TODO REgister Account
-				String query = "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)";
-				ASServer.sql.execute(query, accountParams);
+					// TODO REgister Account
+					String query = "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)";
+					ASServer.sql.execute(query, accountParams);
 
-				accountParams = new String[] {
-						account.getUsername(),
-						new String(Base64.encode(new String(account
-								.getPassword()).getBytes())) };
-				query = "SELECT * FROM Users WHERE username=? AND password=?";
-				ResultSet rs = ASServer.sql.query(query, accountParams);
+					accountParams = new String[] {
+							account.getUsername(),
+							new String(Base64.encode(new String(account
+									.getPassword()).getBytes())) };
+					query = "SELECT id FROM Users WHERE username=? AND password=?";
+					ResultSet rs = ASServer.sql.query(query, accountParams);
 
-				while (rs.next()) {
-					account.setUserId(rs.getInt("id"));
-					response.setUserAccount(account);
-					break;
-				}
+					while (rs.next()) {
+						account.setUserId(rs.getInt("id"));
+						response.setUserAccount(account);
+						break;
+					}
 
-				if (account.getUserId() != null) {
-					response.setSuccess(true);
-					ASLog.debug("Account registered: " + account.getUsername());
+					if (account.getUserId() != null) {
+						response.setSuccess(true);
+						ASLog.debug("Account registered: "
+								+ account.getUsername());
+					} else {
+						response.addMessage(MessagesEnum.REGISTRATION_FAILED);
+					}
 				} else {
-					response.addMessage(MessagesEnum.REGISTRATION_FAILED);
+					// Return error response!
+					response.addMessages(messages);
 				}
-			} else {
-				// Return error response!
-				response.addMessages(messages);
 			}
 		} catch (SQLException sqle) {
 			ASLog.debug("Could not register user: "
-					+ registrationRequest.getAccount().getUsername(), sqle);
+					+ request.getAccount().getUsername(), sqle);
 			response.addMessage(MessagesEnum.REGISTRATION_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
@@ -106,11 +111,43 @@ public class Authentication extends AsRestApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/login")
-	public LoginResponse login(LoginRequest loginRequest) {
+	public LoginResponse login(LoginRequest request) {
 		LoginResponse response = new LoginResponse();
 		try {
-			// TODO registration Validation Here
-			response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
+			if (request != null) {
+				LoginValidator lv = new LoginValidator(request.getAccount());
+				Message[] messages = lv.getReasons();
+
+				if (lv.isValid()) {
+					UserAccount account = request.getAccount();
+
+					String query = "SELECT id FROM Users WHERE username=? AND password=?";
+					ResultSet rs = ASServer.sql.query(
+							query,
+							new String[] {
+									account.getUsername(),
+									new String(Base64.encode(new String(account
+											.getPassword()).getBytes())) });
+
+					while (rs.next()) {
+						account.setUserId(rs.getInt("id"));
+						response.setAccount(account);
+						response.setSuccess(true);
+					}
+
+					if (account.getUserId() != null) {
+						response.setSuccess(true);
+					} else {
+						response.addMessage(MessagesEnum.LOGIN_FAILED);
+					}
+				} else {
+					response.addMessages(messages);
+					response.addMessage(MessagesEnum.LOGIN_FAILED);
+				}
+
+				// TODO registration Validation Here
+
+			}
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
 		}

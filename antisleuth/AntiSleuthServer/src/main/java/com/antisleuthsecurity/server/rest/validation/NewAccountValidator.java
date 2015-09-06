@@ -6,10 +6,10 @@ import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
-public class AccountValidator extends Validator {
+public class NewAccountValidator extends Validator {
 	private UserAccount account = null;
 
-	public AccountValidator(UserAccount account) {
+	public NewAccountValidator(UserAccount account) {
 		this.account = account;
 	}
 
