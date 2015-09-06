@@ -9,6 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
@@ -48,15 +50,20 @@ public class Authentication extends AsRestApi {
 
 			if (av.isValid()) {
 				UserAccount account = registrationRequest.getAccount();
-				String[] accountParams = new String[] { account.getUsername(),
-						new String(account.getPassword()), account.getSalt() };
+				String[] accountParams = new String[] {
+						account.getUsername(),
+						new String(Base64.encode(new String(account
+								.getPassword()).getBytes())),
+						new String(Base64.encode(account.getSalt().getBytes())) };
 
 				// TODO REgister Account
 				String query = "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)";
 				ASServer.sql.execute(query, accountParams);
 
-				accountParams = new String[] { account.getUsername(),
-						new String(account.getPassword()) };
+				accountParams = new String[] {
+						account.getUsername(),
+						new String(Base64.encode(new String(account
+								.getPassword()).getBytes())) };
 				query = "SELECT * FROM Users WHERE username=? AND password=?";
 				ResultSet rs = ASServer.sql.query(query, accountParams);
 
@@ -77,7 +84,8 @@ public class Authentication extends AsRestApi {
 				response.addMessages(messages);
 			}
 		} catch (SQLException sqle) {
-			ASLog.debug("Could not register user: " + registrationRequest.getAccount().getUsername(), sqle);
+			ASLog.debug("Could not register user: "
+					+ registrationRequest.getAccount().getUsername(), sqle);
 			response.addMessage(MessagesEnum.REGISTRATION_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
