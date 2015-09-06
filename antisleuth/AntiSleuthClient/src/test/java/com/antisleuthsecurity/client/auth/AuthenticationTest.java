@@ -1,5 +1,7 @@
 package com.antisleuthsecurity.client.auth;
 
+import com.antisleuthsecurity.asc_api.cryptography.Cryptographer;
+import com.antisleuthsecurity.asc_api.cryptography.hashes.hash.SHA256;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
@@ -18,7 +20,11 @@ public class AuthenticationTest {
 		
 		UserAccount account = new UserAccount();
 		account.setUsername("testUsername");
-		account.setPassword("Test Password".toCharArray());
+		account.setSalt(new String(Cryptographer.generateSalt(32)));
+		
+		String password = new SHA256().getHashAsString("TEST PASSWORD:" + account.getSalt());
+		
+		account.setPassword(password.toCharArray());
 		account.setEmailAddress("Test@Email.Address");
 		
 		RegistrationRequest regRequest = new RegistrationRequest();

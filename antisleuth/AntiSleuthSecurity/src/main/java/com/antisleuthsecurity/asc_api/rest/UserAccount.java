@@ -6,6 +6,7 @@ public class UserAccount implements Serializable {
 	private Integer userId = null;
 	private String username = null;
 	private char[] password = null;
+	private String salt = null;
 	private String emailAddress = null;
 
 	public Integer getUserId() {
@@ -38,6 +39,14 @@ public class UserAccount implements Serializable {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 }

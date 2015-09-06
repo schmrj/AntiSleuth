@@ -6,12 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.server.rest.AsRestApi;
+import com.antisleuthsecurity.server.rest.validation.AccountValidator;
 
 @Path("/auth")
 public class Authentication extends AsRestApi {
@@ -34,7 +36,16 @@ public class Authentication extends AsRestApi {
 	public RegistrationResponse register(RegistrationRequest registrationRequest) {
 		RegistrationResponse response = new RegistrationResponse();
 		try {
-			// TODO registration Validation Here
+			AccountValidator av = new AccountValidator(registrationRequest.getAccount());
+			Message[] messages = av.getReasons();
+			
+			if(av.isValid()){
+				// TODO REgister Account
+				
+			}else{
+				// Return error response!
+				response.addMessages(messages);
+			}
 			response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);

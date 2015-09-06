@@ -9,7 +9,7 @@ import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 public abstract class ASResponse implements Serializable {
 
 	private static final long serialVersionUID = 5092015L; // 05 Sep 2015
-	
+
 	protected boolean success = false;
 	protected Class<?> responseClass = null;
 	private ArrayList<Message> messages = new ArrayList<Message>();
@@ -38,11 +38,19 @@ public abstract class ASResponse implements Serializable {
 		this.messages = messages;
 	}
 
-	public void addMessage(MessagesEnum message){
+	public void addMessage(MessagesEnum message) {
 		this.addMessage(new Message(message));
 	}
-	
-	public void addMessage(Message message){
+
+	public void addMessage(Message message) {
 		this.messages.add(message);
+	}
+
+	public void addMessages(Message[] messages) {
+		if (messages != null) {
+			for (Message message : messages) {
+				this.messages.add(message);
+			}
+		}
 	}
 }
