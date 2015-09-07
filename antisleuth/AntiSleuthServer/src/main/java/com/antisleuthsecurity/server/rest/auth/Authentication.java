@@ -96,7 +96,7 @@ public class Authentication extends AsRestApi {
 			}
 		} catch (SQLException sqle) {
 			ASLog.debug("Could not register user: "
-					+ request.getAccount().getUsername(), sqle);
+					+ request.getAccount().getUsername() + ", [" + sqle.getErrorCode() + "] " + sqle.getMessage());
 			response.addMessage(MessagesEnum.REGISTRATION_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
