@@ -6,8 +6,10 @@ import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.SaltRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.client.common.WebServiceClient;
 import com.sun.jersey.api.client.WebResource;
 
@@ -34,9 +36,14 @@ public class AuthenticationTest {
 		Authentication auth = new Authentication();
 		RegistrationResponse regResponse = auth.registerUser(regRequest, resource);
 		
+		SaltRequest saltRequest = new SaltRequest();
+		account.setUsername("X2");
+		saltRequest.setAccount(account);
+		SaltResponse saltResponse = auth.getSalt(saltRequest, resource);
+		
 		LoginRequest loginRequest = new LoginRequest();
 		loginRequest.setAccount(account);
-		LoginResponse response = auth.login(loginRequest, resource);
+		LoginResponse loginResponse = auth.login(loginRequest, resource);
 		
 		System.out.println("Finished");
 	}

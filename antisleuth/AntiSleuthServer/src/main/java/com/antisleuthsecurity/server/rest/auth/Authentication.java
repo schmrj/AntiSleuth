@@ -13,16 +13,20 @@ import org.bouncycastle.util.encoders.Base64;
 
 import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
+import com.antisleuthsecurity.asc_api.cryptography.Cryptographer;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.SaltRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.antisleuthsecurity.server.ASServer;
 import com.antisleuthsecurity.server.rest.AsRestApi;
 import com.antisleuthsecurity.server.rest.validation.LoginValidator;
 import com.antisleuthsecurity.server.rest.validation.NewAccountValidator;
+import com.antisleuthsecurity.server.rest.validation.SaltValidator;
 
 @Path("/auth")
 public class Authentication extends AsRestApi {
@@ -75,6 +79,8 @@ public class Authentication extends AsRestApi {
 						response.setUserAccount(account);
 						break;
 					}
+
+					rs.close();
 
 					if (account.getUserId() != null) {
 						response.setSuccess(true);
@@ -135,6 +141,8 @@ public class Authentication extends AsRestApi {
 						response.setSuccess(true);
 					}
 
+					rs.close();
+
 					if (account.getUserId() != null) {
 						response.setSuccess(true);
 					} else {
@@ -144,9 +152,60 @@ public class Authentication extends AsRestApi {
 					response.addMessages(messages);
 					response.addMessage(MessagesEnum.LOGIN_FAILED);
 				}
+			}
+		} catch (Exception e) {
+			response.addMessage(MessagesEnum.SYSTEM_ERROR);
+		}
 
-				// TODO registration Validation Here
+		return response;
+	}
 
+	/**
+	 * Consume a {@link SaltRequest} in order to attempt to retreive the user's
+	 * Salt from the database for authentication.
+	 * 
+	 * @param {@link SaltRequest} to consume
+	 * @return {@link SaltResponse} containing information pertaining to the
+	 *         {@link SaltRequest} attempt
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/salt")
+	public SaltResponse postGetSalt(SaltRequest request) {
+		SaltResponse response = new SaltResponse();
+		try {
+			if (request != null) {
+				// TODO GetSalt Here
+				UserAccount account = request.getAccount();
+				SaltValidator sv = new SaltValidator(account);
+				Message[] messages = sv.getReasons();
+
+				if (sv.isValid()) {
+					String query = "SELECT salt FROM Users WHERE username=?";
+					ResultSet rs = ASServer.sql.query(query,
+							new String[] { account.getUsername() });
+
+					while (rs.next()) {
+						response.setSalt(rs.getString("salt"));
+						response.setSuccess(true);
+					}
+					rs.close();
+
+					/*
+					 * If the useraccount was not found, generate a random salt.
+					 * This is to prevent this call from being used to identify
+					 * valid user accounts.
+					 */
+					if (!response.isSuccess()) {
+						response.setSalt(new String(Base64.encode(Cryptographer
+								.generateSalt(32))));
+						response.setSuccess(true);
+					}
+
+				} else {
+					response.addMessages(messages);
+				}
 			}
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
