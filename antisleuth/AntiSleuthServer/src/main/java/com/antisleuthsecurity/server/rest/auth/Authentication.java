@@ -31,6 +31,8 @@ import com.antisleuthsecurity.server.rest.validation.SaltValidator;
 @Path("/auth")
 public class Authentication extends AsRestApi {
 
+	AuthenticationUtil authUtil = new AuthenticationUtil();
+	
 	public Authentication() {
 
 	}
@@ -146,14 +148,21 @@ public class Authentication extends AsRestApi {
 
 					if (account.getUserId() != null) {
 						response.setSuccess(true);
+						authUtil.addLoginAttempt(account, true, ASServer.sql);
 					} else {
 						response.addMessage(MessagesEnum.LOGIN_FAILED);
+						Integer userId = authUtil.findUserId(account.getUsername(), ASServer.sql);
+						authUtil.addLoginAttempt(userId, false, ASServer.sql);
 					}
 				} else {
 					response.addMessages(messages);
 					response.addMessage(MessagesEnum.LOGIN_FAILED);
 				}
 			}
+		} catch (SQLException sqle) {
+			ASLog.debug("Could not login user: "
+					+ request.getAccount().getUsername() + ", [" + sqle.getErrorCode() + "] " + sqle.getMessage());
+			response.addMessage(MessagesEnum.LOGIN_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
 		}

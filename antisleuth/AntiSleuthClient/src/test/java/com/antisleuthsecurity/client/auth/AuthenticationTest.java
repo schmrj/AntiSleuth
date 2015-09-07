@@ -50,6 +50,7 @@ public class AuthenticationTest {
 		saltRequest.setAccount(account);
 		SaltResponse saltResponse = auth.getSalt(saltRequest, resource);
 
+		password = "T";
 		if (saltResponse.isSuccess()) {
 			UserAccount saltAccount = saltResponse.getAccount();
 			hashedPassword = Authentication.saltPassword(password,
