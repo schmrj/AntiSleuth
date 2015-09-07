@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class UserAccount implements Serializable {
 	private Integer userId = null;
 	private String username = null;
-	private char[] password = null;
-	private String salt = null;
+	private String password = null;
+	private byte[] salt = null;
 	private String emailAddress = null;
 
 	public Integer getUserId() {
@@ -25,11 +25,11 @@ public class UserAccount implements Serializable {
 		this.username = username;
 	}
 
-	public char[] getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(char[] password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
@@ -41,11 +41,11 @@ public class UserAccount implements Serializable {
 		this.emailAddress = emailAddress;
 	}
 
-	public String getSalt() {
+	public byte[] getSalt() {
 		return salt;
 	}
 
-	public void setSalt(String salt) {
+	public void setSalt(byte[] salt) {
 		this.salt = salt;
 	}
 

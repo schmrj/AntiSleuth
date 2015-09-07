@@ -2,16 +2,18 @@ package com.antisleuthsecurity.asc_api.rest.responses;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.antisleuthsecurity.asc_api.rest.UserAccount;
+
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SaltResponse extends ASResponse {
-	String salt = null;
+	private UserAccount account = null;
 
-	public String getSalt() {
-		return salt;
+	public UserAccount getAccount() {
+		return account;
 	}
 
-	public void setSalt(String salt) {
-		this.salt = salt;
+	public void setAccount(UserAccount account) {
+		this.account = account;
 	}
 
 }

@@ -59,9 +59,9 @@ public class Authentication extends AsRestApi {
 					String[] accountParams = new String[] {
 							account.getUsername(),
 							new String(Base64.encode(new String(account
-									.getPassword()).getBytes())),
-							new String(Base64.encode(account.getSalt()
-									.getBytes())) };
+									.getPassword()).getBytes()), "UTF-8"),
+							new String(Base64.encode(account.getSalt()),
+									"UTF-8") };
 
 					// TODO REgister Account
 					String query = "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)";
@@ -70,7 +70,7 @@ public class Authentication extends AsRestApi {
 					accountParams = new String[] {
 							account.getUsername(),
 							new String(Base64.encode(new String(account
-									.getPassword()).getBytes())) };
+									.getPassword()).getBytes()), "UTF-8") };
 					query = "SELECT id FROM Users WHERE username=? AND password=?";
 					ResultSet rs = ASServer.sql.query(query, accountParams);
 
@@ -128,12 +128,13 @@ public class Authentication extends AsRestApi {
 					UserAccount account = request.getAccount();
 
 					String query = "SELECT id FROM Users WHERE username=? AND password=?";
-					ResultSet rs = ASServer.sql.query(
-							query,
-							new String[] {
-									account.getUsername(),
-									new String(Base64.encode(new String(account
-											.getPassword()).getBytes())) });
+					ResultSet rs = ASServer.sql
+							.query(query,
+									new String[] {
+											account.getUsername(),
+											new String(Base64.encode(account
+													.getPassword().getBytes()),
+													"UTF-8") });
 
 					while (rs.next()) {
 						account.setUserId(rs.getInt("id"));
@@ -173,6 +174,7 @@ public class Authentication extends AsRestApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/salt")
 	public SaltResponse postGetSalt(SaltRequest request) {
+		UserAccount saltAccount = new UserAccount();
 		SaltResponse response = new SaltResponse();
 		try {
 			if (request != null) {
@@ -187,7 +189,9 @@ public class Authentication extends AsRestApi {
 							new String[] { account.getUsername() });
 
 					while (rs.next()) {
-						response.setSalt(rs.getString("salt"));
+						saltAccount
+								.setSalt(Base64.decode(rs.getString("salt")));
+						response.setAccount(saltAccount);
 						response.setSuccess(true);
 					}
 					rs.close();
@@ -198,8 +202,8 @@ public class Authentication extends AsRestApi {
 					 * valid user accounts.
 					 */
 					if (!response.isSuccess()) {
-						response.setSalt(new String(Base64.encode(Cryptographer
-								.generateSalt(32))));
+						saltAccount.setSalt(Cryptographer.generateSalt(32));
+						response.setAccount(saltAccount);
 						response.setSuccess(true);
 					}
 
