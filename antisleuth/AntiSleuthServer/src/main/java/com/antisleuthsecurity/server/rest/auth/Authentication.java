@@ -32,7 +32,7 @@ import com.antisleuthsecurity.server.rest.validation.SaltValidator;
 public class Authentication extends AsRestApi {
 
 	AuthenticationUtil authUtil = new AuthenticationUtil();
-	
+
 	public Authentication() {
 
 	}
@@ -98,7 +98,8 @@ public class Authentication extends AsRestApi {
 			}
 		} catch (SQLException sqle) {
 			ASLog.debug("Could not register user: "
-					+ request.getAccount().getUsername() + ", [" + sqle.getErrorCode() + "] " + sqle.getMessage());
+					+ request.getAccount().getUsername() + ", ["
+					+ sqle.getErrorCode() + "] " + sqle.getMessage());
 			response.addMessage(MessagesEnum.REGISTRATION_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
@@ -128,31 +129,43 @@ public class Authentication extends AsRestApi {
 
 				if (lv.isValid()) {
 					UserAccount account = request.getAccount();
+					Integer userId = authUtil.findUserId(account.getUsername(),
+							ASServer.sql);
 
-					String query = "SELECT id FROM Users WHERE username=? AND password=?";
-					ResultSet rs = ASServer.sql
-							.query(query,
-									new String[] {
-											account.getUsername(),
-											new String(Base64.encode(account
-													.getPassword().getBytes()),
-													"UTF-8") });
+					boolean accountLocked = authUtil.isAccountLocked(userId,
+							ASServer.sql);
 
-					while (rs.next()) {
-						account.setUserId(rs.getInt("id"));
-						response.setAccount(account);
-						response.setSuccess(true);
-					}
+					if (!accountLocked) {
+						String query = "SELECT id FROM Users WHERE username=? AND password=?";
+						ResultSet rs = ASServer.sql.query(
+								query,
+								new String[] {
+										account.getUsername(),
+										new String(Base64.encode(account
+												.getPassword().getBytes()),
+												"UTF-8") });
 
-					rs.close();
+						while (rs.next()) {
+							account.setUserId(rs.getInt("id"));
+							response.setAccount(account);
+							response.setSuccess(true);
+						}
 
-					if (account.getUserId() != null) {
-						response.setSuccess(true);
-						authUtil.addLoginAttempt(account, true, ASServer.sql);
-					} else {
-						response.addMessage(MessagesEnum.LOGIN_FAILED);
-						Integer userId = authUtil.findUserId(account.getUsername(), ASServer.sql);
-						authUtil.addLoginAttempt(userId, false, ASServer.sql);
+						rs.close();
+
+						if (account.getUserId() != null) {
+							response.setSuccess(true);
+							authUtil.addLoginAttempt(account, true,
+									ASServer.sql);
+						} else {
+							response.addMessage(MessagesEnum.LOGIN_FAILED);
+							authUtil.addLoginAttempt(userId, false,
+									ASServer.sql);
+						}
+					}else{
+						response.addMessage(MessagesEnum.ACCOUNT_LOCKED);
+						authUtil.addLoginAttempt(userId, false,
+								ASServer.sql);
 					}
 				} else {
 					response.addMessages(messages);
@@ -161,7 +174,8 @@ public class Authentication extends AsRestApi {
 			}
 		} catch (SQLException sqle) {
 			ASLog.debug("Could not login user: "
-					+ request.getAccount().getUsername() + ", [" + sqle.getErrorCode() + "] " + sqle.getMessage());
+					+ request.getAccount().getUsername() + ", ["
+					+ sqle.getErrorCode() + "] " + sqle.getMessage());
 			response.addMessage(MessagesEnum.LOGIN_FAILED);
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);

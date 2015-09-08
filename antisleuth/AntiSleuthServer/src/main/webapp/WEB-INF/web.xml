@@ -20,6 +20,17 @@
 			<param-name>log4j.properties</param-name>
 			<param-value>WEB-INF/log4j.properties</param-value>
 		</init-param>
+		
+		<!-- LOGIN PARAMETERS -->
+		<init-param>
+			<param-name>login.max_failed</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>login.account_lock_time</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<!-- END LOGIN PARAMETERS -->
 
 		<!-- DATABASE PARAMETERS -->
 		<init-param>
