@@ -13,20 +13,16 @@ import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
-import com.antisleuthsecurity.client.common.WebServiceClient;
 import com.antisleuthsecurity.client.crypto.KeyManager;
 import com.sun.jersey.api.client.WebResource;
 
 public class AuthenticationTest {
 
-	public static final String connectionUrl = "http://localhost:8080/AS/api";
-
-	public static void main(String[] args) throws AscException, UnsupportedEncodingException {
+	public void testAuthentication(WebResource resource) throws AscException,
+			UnsupportedEncodingException {
 
 		String password = "TEST PASSWORD";
 
-		WebResource resource = new WebServiceClient(connectionUrl).getClient(
-				connectionUrl, false);
 		Authentication auth = new Authentication();
 		KeyManager manager = new KeyManager();
 
@@ -63,10 +59,6 @@ public class AuthenticationTest {
 		LoginResponse loginResponse = auth.login(loginRequest, resource);
 		System.out.println("Login Response: " + loginResponse.isSuccess());
 
-		AddKeyRequest addKeyRequest = new AddKeyRequest();
-		AddKeyResponse addKeyResponse = manager.addKey(addKeyRequest, resource);
-		
-		
-		System.out.println("Finished");
+		System.out.println("Finished Authentication Test");
 	}
 }
