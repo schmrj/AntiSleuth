@@ -13,6 +13,12 @@ public abstract class Validator {
 			return false;
 		return true;
 	}
+	
+	protected boolean isEmpty(Integer value) {
+		if (value != null)
+			return false;
+		return true;
+	}
 
 	protected boolean isEmpty(byte[] value) {
 		if (value != null && value.length > 0)

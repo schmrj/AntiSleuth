@@ -22,6 +22,6 @@ public class TestController {
 		KeyManagerTest keyManagerTest = new KeyManagerTest();
 		
 		authTest.testAuthentication(resource);
-		keyManagerTest.testKeyManager(resource);
+		keyManagerTest.testKeyManager(authTest.getAccount(), resource);
 	}
 }

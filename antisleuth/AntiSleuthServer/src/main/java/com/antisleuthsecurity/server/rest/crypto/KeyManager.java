@@ -1,5 +1,9 @@
 package com.antisleuthsecurity.server.rest.crypto;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -11,13 +15,17 @@ import org.bouncycastle.util.encoders.Base64;
 
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
+import com.antisleuthsecurity.asc_api.rest.crypto.ASKey;
 import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.antisleuthsecurity.server.ASServer;
 import com.antisleuthsecurity.server.PropsEnum;
 import com.antisleuthsecurity.server.rest.AsRestApi;
 import com.antisleuthsecurity.server.rest.validation.AddKeyValidator;
+import com.antisleuthsecurity.server.rest.validation.KeyRequestValidator;
 
 @Path("/crypto/keys")
 public class KeyManager extends AsRestApi {
@@ -81,6 +89,62 @@ public class KeyManager extends AsRestApi {
 				response.addMessages(akv.getReasons());
 			}
 		}
+		return response;
+	}
+
+	/**
+	 * Method used to retreive a key by Alias and User Id
+	 * 
+	 * @param {@link GetKeyRequest request} 
+	 * @return
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getKey")
+	public GetKeyResponse getKey(GetKeyRequest request) {
+		GetKeyResponse response = new GetKeyResponse();
+		KeyRequestValidator krv = new KeyRequestValidator(request);
+
+		if (krv.isValid()) {
+			ArrayList<ASKey> keyList = new ArrayList<ASKey>();
+			String query = "SELECT * FROM PublicKeys WHERE userId=? AND key_alias=?";
+			String[] params = { request.getUserId() + "", request.getAlias() };
+
+			ResultSet rs = null;
+
+			try {
+				rs = ASServer.sql.query(query, params);
+
+				while (rs.next()) {
+					String alias = rs.getString("key_alias");
+					String keyString = rs.getString("key_content");
+					String keyInstance = rs.getString("key_instance");
+
+					ASKey key = new ASKey();
+					key.setAlias(alias);
+					key.setInstance(keyInstance);
+					byte[] keyContent = Base64.decode(keyString.getBytes());
+					key.setKey(keyContent);
+					keyList.add(key);
+				}
+				response.setKeys(keyList.toArray(new ASKey[keyList.size()]));
+				response.setSuccess(true);
+			} catch (SQLException sqle) {
+				ASLog.error("Database error", sqle);
+				response.addMessage(MessagesEnum.DATABASE_ERROR);
+			} finally {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+
+				}
+			}
+		} else {
+			response.addMessages(krv.getReasons());
+		}
+
+		response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
 		return response;
 	}
 }

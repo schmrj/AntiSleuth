@@ -22,7 +22,8 @@ public enum MessagesEnum implements Serializable {
 	KEY_MISSING (3000005, MessageType.ERROR, "Key is required for upload"),
 	ADD_KEY_REQUEST_MISSING (3000006, MessageType.ERROR, "AddKeyRequest is required"),
 	KEY_ALIAS_MISSING (3000007, MessageType.ERROR, "Key is required for upload"),
-	KEY_INSTANCE_MISSING (3000007, MessageType.ERROR, "Key Instance is required for upload"),
+	KEY_INSTANCE_MISSING (3000008, MessageType.ERROR, "Key Instance is required for upload"),
+	MISSING_USERID (3000009, MessageType.ERROR, "USER ID is required"),
 	
 	// 4 000 000 - 4 009 999 = Key Related Errors
 	KEY_ALIAS_EXISTS (4000001, MessageType.ERROR, "Key Alias Already Exists");
