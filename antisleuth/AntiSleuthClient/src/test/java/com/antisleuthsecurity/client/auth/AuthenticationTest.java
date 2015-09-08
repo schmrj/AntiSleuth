@@ -2,10 +2,7 @@ package com.antisleuthsecurity.client.auth;
 
 import java.io.UnsupportedEncodingException;
 
-import org.bouncycastle.util.encoders.Base64;
-
 import com.antisleuthsecurity.asc_api.cryptography.Cryptographer;
-import com.antisleuthsecurity.asc_api.cryptography.hashes.hash.SHA256;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
@@ -50,7 +47,6 @@ public class AuthenticationTest {
 		saltRequest.setAccount(account);
 		SaltResponse saltResponse = auth.getSalt(saltRequest, resource);
 
-//		password = "T";
 		if (saltResponse.isSuccess()) {
 			UserAccount saltAccount = saltResponse.getAccount();
 			hashedPassword = Authentication.saltPassword(password,
