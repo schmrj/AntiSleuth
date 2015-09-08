@@ -5,13 +5,16 @@ import java.io.UnsupportedEncodingException;
 import com.antisleuthsecurity.asc_api.cryptography.Cryptographer;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
+import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.SaltRequest;
+import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.client.common.WebServiceClient;
+import com.antisleuthsecurity.client.crypto.KeyManager;
 import com.sun.jersey.api.client.WebResource;
 
 public class AuthenticationTest {
@@ -25,6 +28,7 @@ public class AuthenticationTest {
 		WebResource resource = new WebServiceClient(connectionUrl).getClient(
 				connectionUrl, false);
 		Authentication auth = new Authentication();
+		KeyManager manager = new KeyManager();
 
 		UserAccount account = new UserAccount();
 		account.setUsername("testUsername");
@@ -59,6 +63,10 @@ public class AuthenticationTest {
 		LoginResponse loginResponse = auth.login(loginRequest, resource);
 		System.out.println("Login Response: " + loginResponse.isSuccess());
 
+		AddKeyRequest addKeyRequest = new AddKeyRequest();
+		AddKeyResponse addKeyResponse = manager.addKey(addKeyRequest, resource);
+		
+		
 		System.out.println("Finished");
 	}
 }

@@ -3,9 +3,12 @@ package com.antisleuthsecurity.asc_api.rest.responses;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public abstract class ASResponse implements Serializable {
 
 	private static final long serialVersionUID = 5092015L; // 05 Sep 2015
