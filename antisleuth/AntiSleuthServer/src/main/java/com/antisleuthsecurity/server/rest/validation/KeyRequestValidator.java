@@ -7,15 +7,21 @@ import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
 public class KeyRequestValidator extends Validator {
 
 	private GetKeyRequest request = null;
+	boolean checkAlias = true;
 
 	public KeyRequestValidator(GetKeyRequest request) {
 		this.request = request;
+	}
+	
+	public KeyRequestValidator(GetKeyRequest request, boolean checkAlias) {
+		this.request = request;
+		this.checkAlias = checkAlias;
 	}
 
 	@Override
 	public Message[] getReasons() {
 		if (request != null) {
-			if (isEmpty(request.getAlias()))
+			if (isEmpty(request.getAlias()) && this.checkAlias)
 				messages.add(new Message(MessagesEnum.KEY_ALIAS_MISSING));
 			if (isEmpty(request.getUserId()))
 				messages.add(new Message(MessagesEnum.MISSING_USERID));
@@ -26,7 +32,7 @@ public class KeyRequestValidator extends Validator {
 	@Override
 	public boolean isValid() {
 		if (request != null) {
-			if (isEmpty(request.getAlias()))
+			if (isEmpty(request.getAlias()) && this.checkAlias)
 				return false;
 			if (isEmpty(request.getUserId()))
 				return false;

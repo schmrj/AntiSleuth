@@ -95,7 +95,7 @@ public class KeyManager extends AsRestApi {
 	/**
 	 * Method used to retreive a key by Alias and User Id
 	 * 
-	 * @param {@link GetKeyRequest request} 
+	 * @param {@link GetKeyRequest request}
 	 * @return
 	 */
 	@POST
@@ -144,7 +144,61 @@ public class KeyManager extends AsRestApi {
 			response.addMessages(krv.getReasons());
 		}
 
-		response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
+		return response;
+	}
+
+	/**
+	 * Method used to retreive all keys for a given User Id
+	 * 
+	 * @param {@link GetKeyRequest request}
+	 * @return
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getAllKeys")
+	public GetKeyResponse getAllKeys(GetKeyRequest request) {
+		GetKeyResponse response = new GetKeyResponse();
+		KeyRequestValidator krv = new KeyRequestValidator(request, false);
+
+		if (krv.isValid()) {
+			ArrayList<ASKey> keyList = new ArrayList<ASKey>();
+			String query = "SELECT * FROM PublicKeys WHERE userId=?";
+			String[] params = { request.getUserId() + "" };
+
+			ResultSet rs = null;
+
+			try {
+				rs = ASServer.sql.query(query, params);
+
+				while (rs.next()) {
+					String alias = rs.getString("key_alias");
+					String keyString = rs.getString("key_content");
+					String keyInstance = rs.getString("key_instance");
+
+					ASKey key = new ASKey();
+					key.setAlias(alias);
+					key.setInstance(keyInstance);
+					byte[] keyContent = Base64.decode(keyString.getBytes());
+					key.setKey(keyContent);
+					keyList.add(key);
+				}
+				response.setKeys(keyList.toArray(new ASKey[keyList.size()]));
+				response.setSuccess(true);
+			} catch (SQLException sqle) {
+				ASLog.error("Database error", sqle);
+				response.addMessage(MessagesEnum.DATABASE_ERROR);
+			} finally {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+
+				}
+			}
+		} else {
+			response.addMessages(krv.getReasons());
+		}
+
 		return response;
 	}
 }

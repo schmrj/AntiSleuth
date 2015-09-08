@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
-public class SaltRequest implements Serializable {
+public class SaltRequest extends ASRequest implements Serializable {
 	private UserAccount account = null;
 
 	public UserAccount getAccount() {

@@ -1,6 +1,8 @@
 package com.antisleuthsecurity.asc_api.rest.requests;
 
-public class GetKeyRequest {
+import java.io.Serializable;
+
+public class GetKeyRequest extends ASRequest implements Serializable {
 	private String alias = null;
 	private Integer userId = null;
 

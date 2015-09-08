@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
-public class LoginRequest implements Serializable{
+public class LoginRequest extends ASRequest implements Serializable{
 	private UserAccount account = null;
 
 	public UserAccount getAccount() {

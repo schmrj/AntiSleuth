@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
-public class AddKeyRequest implements Serializable {
+public class AddKeyRequest extends ASRequest implements Serializable {
 	private UserAccount account = null;
 	private String alias = null;
 	private String keyInstance = null;

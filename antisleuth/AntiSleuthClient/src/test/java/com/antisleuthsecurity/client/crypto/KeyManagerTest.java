@@ -26,7 +26,7 @@ public class KeyManagerTest {
 		KeyPair pair = rsa.generateKeyPair();
 		
 		AddKeyRequest addKeyRequest = new AddKeyRequest();
-		addKeyRequest.setAlias("TEST Key");
+		addKeyRequest.setAlias("TEST Key 2");
 		addKeyRequest.setKey(pair.getPublic().getEncoded());
 		addKeyRequest.setKeyInstance(pair.getPublic().getAlgorithm());
 		AddKeyResponse addKeyResponse = manager.addKey(addKeyRequest, resource);
@@ -37,5 +37,8 @@ public class KeyManagerTest {
 		getKeyRequest.setUserId(account.getUserId());
 		GetKeyResponse getKeyResponse = manager.getKey(getKeyRequest, resource);
 		System.out.println("Get Key Response: " + getKeyResponse.isSuccess());
+		
+		GetKeyResponse getAllKeyResponse = manager.getAllUserKey(getKeyRequest, resource);
+		System.out.println("Get All Keys Response: " + getKeyResponse.isSuccess());
 	}
 }

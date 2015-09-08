@@ -14,10 +14,11 @@ import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
+import com.antisleuthsecurity.client.ASClient;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-public class Authentication {
+public class Authentication extends ASClient {
 
 	ASLog logger = new ASLog("Client");
 
@@ -34,9 +35,8 @@ public class Authentication {
 	public RegistrationResponse registerUser(RegistrationRequest request,
 			WebResource resource) throws AscException {
 		try {
-			ClientResponse response = resource.path("/auth/register")
-					.type(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, request);
+			ClientResponse response = this.post(request, "/auth/register",
+					resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(RegistrationResponse.class);
@@ -63,9 +63,8 @@ public class Authentication {
 	public LoginResponse login(LoginRequest request, WebResource resource)
 			throws AscException {
 		try {
-			ClientResponse response = resource.path("/auth/login")
-					.type(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, request);
+			ClientResponse response = this.post(request, "/auth/login",
+					resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(LoginResponse.class);
@@ -92,9 +91,8 @@ public class Authentication {
 	public SaltResponse getSalt(SaltRequest request, WebResource resource)
 			throws AscException {
 		try {
-			ClientResponse response = resource.path("/auth/salt")
-					.type(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, request);
+			ClientResponse response = this
+					.post(request, "/auth/salt", resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(SaltResponse.class);
