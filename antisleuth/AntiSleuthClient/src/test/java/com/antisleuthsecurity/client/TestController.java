@@ -1,6 +1,7 @@
 package com.antisleuthsecurity.client;
 
 import java.io.UnsupportedEncodingException;
+import java.security.KeyStoreException;
 
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.client.auth.AuthenticationTest;
@@ -13,7 +14,7 @@ public class TestController {
 	public static WebResource resource = null;
 
 	public static void main(String[] args) throws UnsupportedEncodingException,
-			AscException {
+			AscException, KeyStoreException {
 		resource = new WebServiceClient(connectionUrl).getClient(connectionUrl,
 				false);
 

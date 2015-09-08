@@ -36,8 +36,6 @@ public class LoginValidator extends Validator{
 	}
 
 	public Message[] getReasons() {
-		ArrayList<Message> messages = new ArrayList<Message>();
-
 		if (account == null) {
 			messages.add(new Message(MessagesEnum.ACCOUNT_OBJECT_NULL));
 		} else {

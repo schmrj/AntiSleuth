@@ -7,7 +7,8 @@ import com.antisleuthsecurity.asc_api.rest.UserAccount;
 public class AddKeyRequest implements Serializable {
 	private UserAccount account = null;
 	private String alias = null;
-	private String key = null;
+	private String keyInstance = null;
+	private byte[] key = null;
 
 	public UserAccount getAccount() {
 		return account;
@@ -25,12 +26,20 @@ public class AddKeyRequest implements Serializable {
 		this.alias = alias;
 	}
 
-	public String getKey() {
+	public byte[] getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(byte[] key) {
 		this.key = key;
+	}
+
+	public String getKeyInstance() {
+		return keyInstance;
+	}
+
+	public void setKeyInstance(String keyInstance) {
+		this.keyInstance = keyInstance;
 	}
 
 }

@@ -7,12 +7,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
+import com.antisleuthsecurity.asc_api.utilities.ASLog;
+import com.antisleuthsecurity.server.ASServer;
 import com.antisleuthsecurity.server.PropsEnum;
 import com.antisleuthsecurity.server.rest.AsRestApi;
+import com.antisleuthsecurity.server.rest.validation.AddKeyValidator;
 
 @Path("/crypto/keys")
 public class KeyManager extends AsRestApi {
@@ -33,6 +38,8 @@ public class KeyManager extends AsRestApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/addKey")
 	public AddKeyResponse addKey(AddKeyRequest request) {
+		AddKeyValidator akv = new AddKeyValidator(request);
+		KeyManagerUtil kmu = new KeyManagerUtil();
 		AddKeyResponse response = new AddKeyResponse();
 
 		// Try to get the session, but don't create a new one if it doesn't
@@ -44,12 +51,36 @@ public class KeyManager extends AsRestApi {
 			UserAccount account = (UserAccount) session
 					.getAttribute(PropsEnum.USER_ACCOUNT.getProperty());
 
-			if (account != null) {
+			if (account != null && akv.isValid()) {
+				byte[] key = request.getKey();
 
+				try {
+					boolean aliasExists = kmu.doesAliasExist(
+							account.getUserId(), request.getAlias(),
+							ASServer.sql);
+
+					if (!aliasExists) {
+						String query = "INSERT INTO PublicKeys (userId, key_alias, key_content, key_instance) VALUES (? , ?, ?, ?)";
+						String b64Key = new String(Base64.encode(request
+								.getKey()), "UTF-8");
+
+						String[] params = { account.getUserId() + "",
+								request.getAlias(), b64Key,
+								request.getKeyInstance() };
+						ASServer.sql.execute(query, params);
+
+						response.setSuccess(true);
+					} else {
+						response.addMessage(MessagesEnum.KEY_ALIAS_EXISTS);
+					}
+				} catch (Exception e) {
+					response.addMessage(MessagesEnum.DATABASE_ERROR);
+					ASLog.error(MessagesEnum.DATABASE_ERROR.getMessage(), e);
+				}
+			} else {
+				response.addMessages(akv.getReasons());
 			}
 		}
-
-		response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
 		return response;
 	}
 }
