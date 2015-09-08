@@ -3,6 +3,7 @@ package com.antisleuthsecurity.server.rest.auth;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,6 +24,7 @@ import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.antisleuthsecurity.server.ASServer;
+import com.antisleuthsecurity.server.PropsEnum;
 import com.antisleuthsecurity.server.rest.AsRestApi;
 import com.antisleuthsecurity.server.rest.validation.LoginValidator;
 import com.antisleuthsecurity.server.rest.validation.NewAccountValidator;
@@ -121,6 +123,7 @@ public class Authentication extends AsRestApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/login")
 	public LoginResponse login(LoginRequest request) {
+		HttpSession session = this.servletRequest.getSession(true);
 		LoginResponse response = new LoginResponse();
 		try {
 			if (request != null) {
@@ -157,6 +160,7 @@ public class Authentication extends AsRestApi {
 							response.setSuccess(true);
 							authUtil.addLoginAttempt(account, true,
 									ASServer.sql);
+							session.setAttribute(PropsEnum.USER_ACCOUNT.getProperty(), account);
 						} else {
 							response.addMessage(MessagesEnum.LOGIN_FAILED);
 							authUtil.addLoginAttempt(userId, false,

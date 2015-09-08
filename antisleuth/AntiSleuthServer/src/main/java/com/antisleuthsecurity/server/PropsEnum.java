@@ -2,6 +2,9 @@ package com.antisleuthsecurity.server;
 
 public enum PropsEnum {
 	
+	// SESSION PARAMETERS
+	USER_ACCOUNT ("session.useraccount"),
+	
 	// Authentication Parameters
 	LOGIN_MAX_FAILED ("login.max_failed"),
 	LOGIN_LOCK_TIME ("login.account_lock_time"),
