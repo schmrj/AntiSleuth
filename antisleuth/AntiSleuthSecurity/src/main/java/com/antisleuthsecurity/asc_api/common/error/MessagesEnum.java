@@ -13,6 +13,7 @@ public enum MessagesEnum implements Serializable {
 	REGISTRATION_FAILED (2000001, MessageType.ERROR, "Could not register user"),
 	LOGIN_FAILED (2000002, MessageType.ERROR, "Login Failed"),
 	ACCOUNT_LOCKED (2000003, MessageType.ERROR, "Login Account Locked, too many failed attempts"),
+	NOT_AUTHENTICATED (2000004, MessageType.ERROR, "Not currently logged in"),
 	
 	// 3 000 000 - 3 009 999 = Validation Messages
 	MISSING_USERNAME (3000001, MessageType.ERROR, "Username is required"),

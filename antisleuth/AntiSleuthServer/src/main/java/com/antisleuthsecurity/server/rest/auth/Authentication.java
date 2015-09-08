@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,6 +21,7 @@ import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.RegistrationRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.SaltRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.LogoutResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.RegistrationResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SaltResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
@@ -160,16 +162,17 @@ public class Authentication extends AsRestApi {
 							response.setSuccess(true);
 							authUtil.addLoginAttempt(account, true,
 									ASServer.sql);
-							session.setAttribute(PropsEnum.USER_ACCOUNT.getProperty(), account);
+							session.setAttribute(
+									PropsEnum.USER_ACCOUNT.getProperty(),
+									account);
 						} else {
 							response.addMessage(MessagesEnum.LOGIN_FAILED);
 							authUtil.addLoginAttempt(userId, false,
 									ASServer.sql);
 						}
-					}else{
+					} else {
 						response.addMessage(MessagesEnum.ACCOUNT_LOCKED);
-						authUtil.addLoginAttempt(userId, false,
-								ASServer.sql);
+						authUtil.addLoginAttempt(userId, false, ASServer.sql);
 					}
 				} else {
 					response.addMessages(messages);
@@ -241,6 +244,48 @@ public class Authentication extends AsRestApi {
 		} catch (Exception e) {
 			response.addMessage(MessagesEnum.SYSTEM_ERROR);
 		}
+
+		return response;
+	}
+
+	/**
+	 * Use to terminate current session {@link GET}
+	 * 
+	 * @return {@link LogoutResponse}
+	 */
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/logout")
+	public LogoutResponse getLogout() {
+		return logout();
+	}
+
+	/**
+	 * Use to terminate current logged in session {@link POST}
+	 * 
+	 * @return {@link LogoutResponse}
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/logout")
+	public LogoutResponse logout() {
+		LogoutResponse response = new LogoutResponse();
+
+		HttpSession session = this.servletRequest.getSession(false);
+
+		if (session != null) {
+			UserAccount account = (UserAccount) session
+					.getAttribute(PropsEnum.USER_ACCOUNT.getProperty());
+			if (account != null) {
+				response.setSuccess(true);
+				session.invalidate();
+			}
+		}
+		
+		if(!response.isSuccess())
+			response.addMessage(MessagesEnum.NOT_AUTHENTICATED);
 
 		return response;
 	}
