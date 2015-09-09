@@ -60,7 +60,7 @@ public class KeyManagementThread extends Thread {
 	public void run(){
 		while(true){
 			KeyPair pair = this.generateKeys();
-			ASLog.info("Secure key generated");
+			ASLog.trace("Secure key generated");
 			synchronized (this) {
 				this.notifyAll();
 			}
