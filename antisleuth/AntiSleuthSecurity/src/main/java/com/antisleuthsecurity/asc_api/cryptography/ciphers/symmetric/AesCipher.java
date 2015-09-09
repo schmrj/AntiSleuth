@@ -121,6 +121,18 @@ public class AesCipher extends Ciphers {
         else
             this.strength = Strength.S128;
     }
+    
+    public void setStrength(String strength){
+        Integer str = Integer.parseInt(strength);
+        
+        Strength[] strengths = Strength.values();
+        
+        for(Strength s : strengths){
+            if(s.getValue() == str){
+                this.strength = s;
+            }
+        }
+    }
 
     public String getInstance() {
         return getInstance(this.instance);

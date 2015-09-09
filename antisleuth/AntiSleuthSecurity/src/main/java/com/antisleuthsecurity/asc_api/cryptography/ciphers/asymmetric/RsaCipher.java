@@ -55,6 +55,11 @@ public class RsaCipher extends Ciphers {
             this.strength = strength;
         }
     }
+    
+    public void setStrength(String strength){
+        Integer value = Integer.parseInt(strength);
+        this.setStrength(value);
+    }
 
     @Override
     public int getStrength() {
