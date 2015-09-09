@@ -108,12 +108,6 @@ public class AesCipherTest extends TestCase {
 	}
 	
 	@Test
-	public void testSetKeyStrengthNull2(){
-		aes.setStrength(null);
-		Assert.assertEquals(128, aes.getStrength());
-	}
-	
-	@Test
 	public void testSetInstanceNull(){
 		aes.setInstance(null);
 		Assert.assertEquals("AES/CBC/PKCS5Padding", aes.getInstance());
