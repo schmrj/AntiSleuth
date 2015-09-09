@@ -113,7 +113,7 @@
 		</dependency>
 		<!-- End Jersey -->
 	</dependencies>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -142,10 +142,22 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-	<modules>
-		<module>AntiSleuthSecurity</module>
-		<module>AntiSleuthServer</module>
-		<module>AntiSleuthClient</module>
-		<module>ASClientIntegrationTests</module>
-	</modules>
+
+	<profiles>
+		<profile>
+			<id>AntiSleuthSecurity</id>
+			<modules>
+				<module>AntiSleuthSecurity</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>ALL</id>
+			<modules>
+				<module>AntiSleuthSecurity</module>
+				<module>AntiSleuthServer</module>
+				<module>AntiSleuthClient</module>
+				<module>ASClientIntegrationTests</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
