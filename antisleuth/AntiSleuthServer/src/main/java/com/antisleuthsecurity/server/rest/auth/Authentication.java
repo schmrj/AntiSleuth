@@ -3,6 +3,7 @@ package com.antisleuthsecurity.server.rest.auth;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -39,6 +40,10 @@ public class Authentication extends AsRestApi {
 
 	public Authentication() {
 
+	}
+	
+	public Authentication(HttpServletRequest request) {
+		this.servletRequest = request;
 	}
 
 	/**

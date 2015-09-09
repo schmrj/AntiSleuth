@@ -8,8 +8,10 @@ import com.antisleuthsecurity.asc_api.cryptography.ciphers.asymmetric.RsaCipher;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.DeleteKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.DeleteKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -26,7 +28,7 @@ public class KeyManagerTest {
 		KeyPair pair = rsa.generateKeyPair();
 		
 		AddKeyRequest addKeyRequest = new AddKeyRequest();
-		addKeyRequest.setAlias("TEST Key 2");
+		addKeyRequest.setAlias("TEST Key");
 		addKeyRequest.setKey(pair.getPublic().getEncoded());
 		addKeyRequest.setKeyInstance(pair.getPublic().getAlgorithm());
 		AddKeyResponse addKeyResponse = manager.addKey(addKeyRequest, resource);
@@ -40,5 +42,11 @@ public class KeyManagerTest {
 		
 		GetKeyResponse getAllKeyResponse = manager.getAllUserKey(getKeyRequest, resource);
 		System.out.println("Get All Keys Response: " + getKeyResponse.isSuccess());
+		
+		DeleteKeyRequest deleteKeyRequest = new DeleteKeyRequest();
+		deleteKeyRequest.setAccount(account);
+		deleteKeyRequest.setKeyAlias("TEST KEY");
+		DeleteKeyResponse deleteKeyResponse = manager.deleteKey(deleteKeyRequest, resource);
+		System.out.println("Delete Key Response: " + deleteKeyResponse.isSuccess());
 	}
 }

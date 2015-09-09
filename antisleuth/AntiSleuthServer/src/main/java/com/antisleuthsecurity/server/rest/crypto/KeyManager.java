@@ -13,18 +13,25 @@ import javax.ws.rs.core.MediaType;
 
 import org.bouncycastle.util.encoders.Base64;
 
+import com.antisleuthsecurity.asc_api.common.error.Message;
 import com.antisleuthsecurity.asc_api.common.error.MessagesEnum;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.crypto.ASKey;
 import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.DeleteKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.LoginRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.DeleteKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.LoginResponse;
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
 import com.antisleuthsecurity.server.ASServer;
 import com.antisleuthsecurity.server.PropsEnum;
 import com.antisleuthsecurity.server.rest.AsRestApi;
+import com.antisleuthsecurity.server.rest.auth.Authentication;
 import com.antisleuthsecurity.server.rest.validation.AddKeyValidator;
+import com.antisleuthsecurity.server.rest.validation.DeleteKeyValidator;
 import com.antisleuthsecurity.server.rest.validation.KeyRequestValidator;
 
 @Path("/crypto/keys")
@@ -197,6 +204,48 @@ public class KeyManager extends AsRestApi {
 			}
 		} else {
 			response.addMessages(krv.getReasons());
+		}
+
+		return response;
+	}
+
+	/**
+	 * Delete a single public key from the database. Authentication Required!
+	 * 
+	 * @param {@link DeleteKeyRequest request}
+	 * @return {@link DeleteKeyResponse}
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/deleteKey")
+	public DeleteKeyResponse deleteKey(DeleteKeyRequest request) {
+		DeleteKeyResponse response = new DeleteKeyResponse();
+		DeleteKeyValidator dkv = new DeleteKeyValidator(request);
+
+		if (dkv.isValid()) {
+			try {
+				LoginRequest loginRequest = new LoginRequest();
+				loginRequest.setAccount(request.getAccount());
+				LoginResponse loginResponse = new Authentication(
+						this.servletRequest).login(loginRequest);
+
+				if (loginResponse.isSuccess()) {
+					String query = "DELETE FROM PublicKeys WHERE key_alias = ? AND userId = ?";
+					String[] params = { request.getKeyAlias(),
+							loginResponse.getAccount().getUserId() + "" };
+					ASServer.sql.execute(query, params);
+
+					response.setSuccess(true);
+				} else {
+					for (Message msg : loginResponse.getMessages())
+						response.addMessage(msg);
+				}
+			} catch (Exception e) {
+				response.addMessage(MessagesEnum.SYSTEM_ERROR);
+			}
+		} else {
+			response.addMessages(dkv.getReasons());
 		}
 
 		return response;

@@ -2,8 +2,10 @@ package com.antisleuthsecurity.client.crypto;
 
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.requests.AddKeyRequest;
+import com.antisleuthsecurity.asc_api.rest.requests.DeleteKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.AddKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.DeleteKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
 import com.antisleuthsecurity.client.ASClient;
 import com.sun.jersey.api.client.ClientResponse;
@@ -62,7 +64,7 @@ public class KeyManager extends ASClient {
 			throw new AscException("Could not complete request", e);
 		}
 	}
-	
+
 	/**
 	 * User to retrieve all keys by user id
 	 * 
@@ -71,14 +73,40 @@ public class KeyManager extends ASClient {
 	 * @return
 	 * @throws AscException
 	 */
-	public GetKeyResponse getAllUserKey(GetKeyRequest request, WebResource resource)
-			throws AscException {
+	public GetKeyResponse getAllUserKey(GetKeyRequest request,
+			WebResource resource) throws AscException {
 		try {
-			ClientResponse response = this.post(request, "/crypto/keys/getAllKeys",
-					resource);
+			ClientResponse response = this.post(request,
+					"/crypto/keys/getAllKeys", resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(GetKeyResponse.class);
+			} else {
+				throw new AscException("Invalid Response: "
+						+ response.getStatus() + " "
+						+ response.getStatusInfo().getReasonPhrase());
+			}
+		} catch (Exception e) {
+			throw new AscException("Could not complete request", e);
+		}
+	}
+
+	/**
+	 * Delete a single key from the database, re-authentication required
+	 * 
+	 * @param {@link DeleteKeyRequest request}
+	 * @param resource
+	 * @return
+	 * @throws AscException
+	 */
+	public DeleteKeyResponse deleteKey(DeleteKeyRequest request,
+			WebResource resource) throws AscException {
+		try {
+			ClientResponse response = this.post(request,
+					"/crypto/keys/deleteKey", resource);
+
+			if (response.getStatus() == 200) {
+				return response.getEntity(DeleteKeyResponse.class);
 			} else {
 				throw new AscException("Invalid Response: "
 						+ response.getStatus() + " "
