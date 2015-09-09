@@ -18,147 +18,154 @@ import com.antisleuthsecurity.asc_api.utilities.ASLog;
 
 public class RsaCipher extends Ciphers {
 
-	private int strength = 1024;
-	private PrivateKey privateKey = null;
-	private PublicKey publicKey = null;
+    private int            strength   = 1024;
+    private PrivateKey     privateKey = null;
+    private PublicKey      publicKey  = null;
 
-	private CipherInstance instance = CipherInstance.RSANONEOAEPWithSHA256AndMGF1Padding;
+    private CipherInstance instance   = CipherInstance.RSANONEOAEPWithSHA256AndMGF1Padding;
+    
+    public enum CipherInstance {
+        RSANONENoPadding ("RSA/NONE/NoPadding"),
+        RSANONEPKCS1Padding ("RSA/NONE/PKCS1Padding"), 
+        RSANONEOAEPWithMD5AndMGF1Padding ("RSA/NONE/OAEPWithMD5AndMGF1Padding"), 
+        RSANONEOAEPWithSHA1AndMGF1Padding ("RSA/NONE/OAEPWithSHA1AndMGF1Padding"), 
+        RSANONEOAEPWithSHA224AndMGF1Padding ("RSA/NONE/OAEPWithSHA224AndMGF1Padding"), 
+        RSANONEOAEPWithSHA256AndMGF1Padding ("RSA/NONE/OAEPWithSHA256AndMGF1Padding"), 
+        RSANONEOAEPWithSHA384AndMGF1Padding ("RSA/NONE/OAEPWithSHA384AndMGF1Padding"), 
+        RSANONEOAEPWithSHA512AndMGF1Padding ("RSA/NONE/OAEPWithSHA512AndMGF1Padding");
 
-	public enum CipherInstance {
-		RSANONENoPadding, RSANONEPKCS1Padding, RSANONEOAEPWithMD5AndMGF1Padding, RSANONEOAEPWithSHA1AndMGF1Padding, RSANONEOAEPWithSHA224AndMGF1Padding, RSANONEOAEPWithSHA256AndMGF1Padding, RSANONEOAEPWithSHA384AndMGF1Padding, RSANONEOAEPWithSHA512AndMGF1Padding
-	}
+        String value = null;
 
-	public void setStrength(int strength) {
-		if ((strength % 128) == 0) {
-			this.strength = strength;
-		}
-	}
+        private CipherInstance(String value) {
+            this.value = value;
+        }
 
-	@Override
-	public int getStrength() {
-		return this.strength;
-	}
+        public String getValue() {
+            return value;
+        }
 
-	@Override
-	@Deprecated
-	public int getStrength(Enum strength) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-	public String getCipherInstance() {
-		return this.getCipherInstance(this.instance);
-	}
+    }
 
-	public KeyPair generateKeyPair() throws AscException {
-		try {
-			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "BC");
-			SecureRandom random = new SecureRandom();
-			gen.initialize(this.strength, random);
+    public void setStrength(int strength) {
+        if ((strength % 128) == 0) {
+            this.strength = strength;
+        }
+    }
 
-			KeyPair pair = gen.generateKeyPair();
+    @Override
+    public int getStrength() {
+        return this.strength;
+    }
 
-			this.publicKey = pair.getPublic();
-			this.privateKey = pair.getPrivate();
+    @Override
+    @Deprecated
+    public int getStrength(Enum strength) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-			return pair;
-		} catch (Exception e) {
-			throw new AscException(e.getMessage(), e);
-		}
-	}
+    public String getCipherInstance() {
+        return this.getCipherInstance(this.instance);
+    }
 
-	public void setPrivateKey(PrivateKey key) {
-		this.privateKey = key;
-	}
+    public KeyPair generateKeyPair() throws AscException {
+        try {
+            KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "BC");
+            SecureRandom random = new SecureRandom();
+            gen.initialize(this.strength, random);
 
-	public void setPublicKey(PublicKey key) {
-		this.publicKey = key;
-	}
+            KeyPair pair = gen.generateKeyPair();
 
-	public void setPublicKeyUrlB64(String key) {
-		byte[] encodedKey = UrlBase64.decode(key.getBytes());
-		try{
-			PublicKey pKey = null;
-			pKey = KeyFactory.getInstance("RSA").generatePublic(
-					new X509EncodedKeySpec(encodedKey));
-			this.publicKey = pKey;
-		}catch(Exception e){
-			ASLog.error("Could not set public key", e);
-		}
-	}
+            this.publicKey = pair.getPublic();
+            this.privateKey = pair.getPrivate();
 
-	public Cipher getCipher() throws AscException {
-		return this.getCipher(this.mode);
-	}
+            return pair;
+        }
+        catch (Exception e) {
+            throw new AscException(e.getMessage(), e);
+        }
+    }
 
-	@Override
-	public Cipher getCipher(int mode) throws AscException {
-		try {
-			Cipher cipher = null;
-			cipher = Cipher.getInstance(this.getCipherInstance(), "BC");
+    public void setPrivateKey(PrivateKey key) {
+        this.privateKey = key;
+    }
 
-			if (mode == Cipher.ENCRYPT_MODE) {
-				cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-			} else {
-				cipher.init(Cipher.DECRYPT_MODE, privateKey);
-			}
+    public void setPublicKey(PublicKey key) {
+        this.publicKey = key;
+    }
 
-			return cipher;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AscException("Could not build RSA Cipher", e);
-		}
-	}
+    public void setPublicKeyUrlB64(String key) {
+        byte[] encodedKey = UrlBase64.decode(key.getBytes());
+        try {
+            PublicKey pKey = null;
+            pKey = KeyFactory.getInstance("RSA").generatePublic(
+                    new X509EncodedKeySpec(encodedKey));
+            this.publicKey = pKey;
+        }
+        catch (Exception e) {
+            ASLog.error("Could not set public key", e);
+        }
+    }
 
-	public String getCipherInstance(CipherInstance instance) {
-		switch (instance) {
-		case RSANONENoPadding:
-			return "RSA/NONE/NoPadding";
-		case RSANONEPKCS1Padding:
-			return "RSA/NONE/PKCS1Padding";
-		case RSANONEOAEPWithMD5AndMGF1Padding:
-			return "RSA/NONE/OAEPWithMD5AndMGF1Padding";
-		case RSANONEOAEPWithSHA1AndMGF1Padding:
-			return "RSA/NONE/OAEPWithSHA1AndMGF1Padding";
-		case RSANONEOAEPWithSHA224AndMGF1Padding:
-			return "RSA/NONE/OAEPWithSHA224AndMGF1Padding";
-		case RSANONEOAEPWithSHA256AndMGF1Padding:
-			return "RSA/NONE/OAEPWithSHA256AndMGF1Padding";
-		case RSANONEOAEPWithSHA384AndMGF1Padding:
-			return "RSA/NONE/OAEPWithSHA384AndMGF1Padding";
-		case RSANONEOAEPWithSHA512AndMGF1Padding:
-			return "RSA/NONE/OAEPWithSHA512AndMGF1Padding";
-		default:
-			throw new IllegalStateException();
-		}
-	}
+    public Cipher getCipher() throws AscException {
+        return this.getCipher(this.mode);
+    }
 
-	public PrivateKey getPrivateKey() {
-		return privateKey;
-	}
+    @Override
+    public Cipher getCipher(int mode) throws AscException {
+        try {
+            Cipher cipher = null;
+            cipher = Cipher.getInstance(this.getCipherInstance(), "BC");
 
-	public PublicKey getPublicKey() {
-		return publicKey;
-	}
+            if (mode == Cipher.ENCRYPT_MODE) {
+                cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            }
+            else {
+                cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            }
 
-	public void setKeyPair(KeyPair pair) {
-		this.publicKey = pair.getPublic();
-		this.privateKey = pair.getPrivate();
-	}
+            return cipher;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new AscException("Could not build RSA Cipher", e);
+        }
+    }
 
-	public CipherInstance getInstance() {
-		return instance;
-	}
+    public String getCipherInstance(CipherInstance instance) {
+        return instance.getValue();
+    }
 
-	public void setInstance(CipherInstance instance) {
-		this.instance = instance;
-	}
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
 
-	public int getMode() {
-		return mode;
-	}
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
 
-	public void setMode(int mode) {
-		this.mode = mode;
-	}
+    public void setKeyPair(KeyPair pair) {
+        this.publicKey = pair.getPublic();
+        this.privateKey = pair.getPrivate();
+    }
+
+    public CipherInstance getInstance() {
+        return instance;
+    }
+
+    public void setInstance(CipherInstance instance) {
+        this.instance = instance;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
 }
