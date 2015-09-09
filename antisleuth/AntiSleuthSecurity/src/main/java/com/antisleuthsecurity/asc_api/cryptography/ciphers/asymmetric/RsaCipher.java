@@ -160,6 +160,15 @@ public class RsaCipher extends Ciphers {
     public void setInstance(CipherInstance instance) {
         this.instance = instance;
     }
+    
+    public void setInstance(String value){
+        CipherInstance[] values = CipherInstance.values();
+        
+        for(CipherInstance instance : values){
+            if(instance.getValue().equals(value))
+                this.instance = instance;
+        }
+    }
 
     public int getMode() {
         return mode;
