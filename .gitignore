@@ -5,3 +5,5 @@
 *.class
 /build
 .classpath
+.project
+*.log
