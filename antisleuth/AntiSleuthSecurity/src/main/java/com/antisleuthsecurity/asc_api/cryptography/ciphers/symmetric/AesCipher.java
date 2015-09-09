@@ -20,12 +20,27 @@ public class AesCipher extends Ciphers {
     private byte[]         iv       = null;
 
     public enum Strength {
-        NONE, S128, S192, S256
+        NONE(128), S128(128), S192(192), S256(256);
+
+        Integer value = null;
+
+        private Strength(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
+        }
+
     }
 
     public enum CipherInstance {
-        AESCBCPKCS5Padding ("AES/CBC/PKCS5Padding"), 
-        AESCBCPKSC7Padding ("AES/CBC/PKCS7Padding");
+        AESCBCPKCS5Padding("AES/CBC/PKCS5Padding"),
+        AESCBCPKSC7Padding("AES/CBC/PKCS7Padding");
 
         String value = null;
 
@@ -88,20 +103,11 @@ public class AesCipher extends Ciphers {
     @SuppressWarnings("rawtypes")
     @Override
     public int getStrength(Enum strength) {
+        Strength stren = (Strength) strength;
+        if (stren == null)
+            stren = Strength.NONE;
 
-        if (strength == null)
-            strength = Strength.NONE;
-
-        switch ((Strength) strength) {
-            case NONE:
-            default:
-            case S128:
-                return 128;
-            case S192:
-                return 192;
-            case S256:
-                return 256;
-        }
+        return stren.getValue();
     }
 
     @Override
