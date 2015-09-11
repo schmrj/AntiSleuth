@@ -30,6 +30,16 @@ import com.antisleuthsecurity.server.rest.validation.SendMessageValidator;
 @Path("/messaging")
 public class MessageService extends AsRestApi {
 
+	/**
+	 * Send a message to a single user or a group of users. To identify mulriple
+	 * recipients, include multiple encrypted keys in the {@link
+	 * MessageParts#addKey(String username, byte[])} Where the username is the
+	 * recipient
+	 * 
+	 * @param {@link SendMessageRequest request} Request containing the
+	 *        information for the message to send
+	 * @return
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -87,6 +97,11 @@ public class MessageService extends AsRestApi {
 		return response;
 	}
 
+	/**
+	 * Get all messages that have been sent to the currently logged in user.
+	 * 
+	 * @return {@link GetMessageResponse}
+	 */
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -123,18 +138,18 @@ public class MessageService extends AsRestApi {
 						parts.setMessageCipherInstance(msgCipherInstance);
 						parts.addKey(myAccount.getUsername(), key);
 						parts.addMessage(msg);
-						parts.setOptions(new ObjectMapper().readValue(options, TreeMap.class));
+						parts.setOptions(new ObjectMapper().readValue(options,
+								TreeMap.class));
 						UserAccount from = new AuthenticationUtil()
 								.findUserById(rs.getInt("from"), ASServer.sql);
 						parts.setFrom(from);
-						
+
 						response.addMsg(msgId, parts);
 					}
-					
 
-					if(response.getMsgs().size() > 0){
+					if (response.getMsgs().size() > 0) {
 						response.setSuccess(true);
-					}else{
+					} else {
 						response.addMessage(MessagesEnum.MESSAGE_NONE_AVAILABLE);
 					}
 				} catch (Exception e) {

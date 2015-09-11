@@ -10,11 +10,23 @@ import com.sun.jersey.api.client.WebResource;
 
 public class Messaging extends ASClient {
 
+	/**
+	 * Send a message to a single user or a group of users. To identify mulriple
+	 * recipients, include multiple encrypted keys in the {@link
+	 * MessageParts#addKey(String username, byte[])} Where the username is the
+	 * recipient
+	 * 
+	 * @param {@link SendMessageRequest request} Request containing the
+	 *        information for the message to send
+	 * @param {@link WebResource resource}
+	 * @return {@link SendMessageRequest}
+	 * @throws AscException
+	 */
 	public SendMessageResponse sendMessage(SendMessageRequest request,
 			WebResource resource) throws AscException {
 		try {
-			ClientResponse response = this.post(request,
-					"/messaging/send", resource);
+			ClientResponse response = this.post(request, "/messaging/send",
+					resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(SendMessageResponse.class);
@@ -27,8 +39,16 @@ public class Messaging extends ASClient {
 			throw new AscException("Could not complete request", e);
 		}
 	}
-	
-	public GetMessageResponse getMessages(WebResource resource) throws AscException {
+
+	/**
+	 * Retreive all messages sent to the current user
+	 * 
+	 * @param {@link WebResource resource}
+	 * @return {@link GetMessageResponse}
+	 * @throws AscException
+	 */
+	public GetMessageResponse getMessages(WebResource resource)
+			throws AscException {
 		try {
 			ClientResponse response = this.get("/messaging/receive", resource);
 
