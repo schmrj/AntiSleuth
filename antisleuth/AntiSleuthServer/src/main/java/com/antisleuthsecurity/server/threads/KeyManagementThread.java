@@ -1,3 +1,8 @@
+/**
+ * @author Bob Schmidinger, Robert.Schmidinger@gmail.com
+ * License: Apache 2.0
+ * Copywrite © 2015
+ */
 package com.antisleuthsecurity.server.threads;
 
 import java.security.KeyPair;

@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Bob Schmidinger, Robert.Schmidinger@gmail.com
+ * License: Apache 2.0
+ * Copywrite © 2015
  */
 package com.antisleuthsecurity.asc_api.utilities;
 
