@@ -22,7 +22,7 @@ public enum MessagesEnum implements Serializable {
 	ACCOUNT_OBJECT_NULL (3000004, MessageType.ERROR, "Account object cannot be null"),
 	KEY_MISSING (3000005, MessageType.ERROR, "Key is required for upload"),
 	ADD_KEY_REQUEST_MISSING (3000006, MessageType.ERROR, "AddKeyRequest is required"),
-	KEY_ALIAS_MISSING (3000007, MessageType.ERROR, "Key is required for upload"),
+	KEY_ALIAS_MISSING (3000007, MessageType.ERROR, "Key Alias is required"),
 	KEY_INSTANCE_MISSING (3000008, MessageType.ERROR, "Key Instance is required for upload"),
 	MISSING_USERID (3000009, MessageType.ERROR, "USER ID is required"),
 	

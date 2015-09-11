@@ -24,7 +24,7 @@ public class KeyManager extends ASClient {
 	public AddKeyResponse addKey(AddKeyRequest request, WebResource resource)
 			throws AscException {
 		try {
-			ClientResponse response = this.post(request, "/crypto/keys/addKey",
+			ClientResponse response = this.post(request, "/crypto/addKey",
 					resource);
 
 			if (response.getStatus() == 200) {
@@ -50,7 +50,7 @@ public class KeyManager extends ASClient {
 	public GetKeyResponse getKey(GetKeyRequest request, WebResource resource)
 			throws AscException {
 		try {
-			ClientResponse response = this.post(request, "/crypto/keys/getKey",
+			ClientResponse response = this.post(request, "/crypto/getKey",
 					resource);
 
 			if (response.getStatus() == 200) {
@@ -77,7 +77,7 @@ public class KeyManager extends ASClient {
 			WebResource resource) throws AscException {
 		try {
 			ClientResponse response = this.post(request,
-					"/crypto/keys/getAllKeys", resource);
+					"/crypto/getAllKeys", resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(GetKeyResponse.class);
@@ -103,7 +103,7 @@ public class KeyManager extends ASClient {
             WebResource resource) throws AscException {
         try {
             ClientResponse response = this.post(request,
-                    "/crypto/keys/deleteKey", resource);
+                    "/crypto/deleteKey", resource);
 
             if (response.getStatus() == 200) {
                 return response.getEntity(DeleteKeyResponse.class);
@@ -129,7 +129,7 @@ public class KeyManager extends ASClient {
             WebResource resource) throws AscException {
         try {
             ClientResponse response = this.post(request,
-                    "/crypto/keys/panicDeleteKeys", resource);
+                    "/crypto/panicDeleteKeys", resource);
 
             if (response.getStatus() == 200) {
                 return response.getEntity(DeleteKeyResponse.class);

@@ -34,7 +34,7 @@ import com.antisleuthsecurity.server.rest.validation.AddKeyValidator;
 import com.antisleuthsecurity.server.rest.validation.DeleteKeyValidator;
 import com.antisleuthsecurity.server.rest.validation.KeyRequestValidator;
 
-@Path("/crypto/keys")
+@Path("/crypto")
 public class KeyManager extends AsRestApi {
 
 	private static final long serialVersionUID = 8092015L; // 08 Sep 2015
@@ -263,7 +263,7 @@ public class KeyManager extends AsRestApi {
     @Path("/panicDeleteKeys")
     public DeleteKeyResponse panicDeleteKeys(DeleteKeyRequest request) {
         DeleteKeyResponse response = new DeleteKeyResponse();
-        DeleteKeyValidator dkv = new DeleteKeyValidator(request);
+        DeleteKeyValidator dkv = new DeleteKeyValidator(request, false);
 
         if (dkv.isValid()) {
             try {
@@ -274,8 +274,7 @@ public class KeyManager extends AsRestApi {
 
                 if (loginResponse.isSuccess()) {
                     String query = "DELETE FROM PublicKeys WHERE userId = ?";
-                    String[] params = { request.getKeyAlias(),
-                            loginResponse.getAccount().getUserId() + "" };
+                    String[] params = { loginResponse.getAccount().getUserId() + "" };
                     ASServer.sql.execute(query, params);
 
                     response.setSuccess(true);

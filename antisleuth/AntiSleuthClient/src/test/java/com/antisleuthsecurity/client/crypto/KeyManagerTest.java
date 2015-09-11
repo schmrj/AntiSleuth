@@ -51,7 +51,7 @@ public class KeyManagerTest {
 		
 		DeleteKeyRequest panicRequest = new DeleteKeyRequest();
 		panicRequest.setAccount(account);
-		DeleteKeyResponse panicDeleteresponse = manager.deleteKey(panicRequest, resource);
+		DeleteKeyResponse panicDeleteresponse = manager.panicDeleteKeys(panicRequest, resource);
 		System.out.println("Panic Delete Keye: " + panicDeleteresponse.isSuccess());
 	}
 }
