@@ -15,6 +15,10 @@ public class WebServiceClient {
 	ASLog logger = new ASLog("WebServiceClient");
 	private WebResource resource = null;
 	
+	public WebServiceClient(){
+	    
+	}
+	
 	public WebServiceClient(String connectionUrl){
 		this.resource = this.setClient(connectionUrl, false);
 	}

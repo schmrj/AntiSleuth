@@ -210,44 +210,86 @@ public class KeyManager extends AsRestApi {
 	}
 
 	/**
-	 * Delete a single public key from the database. Authentication Required!
-	 * 
-	 * @param {@link DeleteKeyRequest request}
-	 * @return {@link DeleteKeyResponse}
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/deleteKey")
-	public DeleteKeyResponse deleteKey(DeleteKeyRequest request) {
-		DeleteKeyResponse response = new DeleteKeyResponse();
-		DeleteKeyValidator dkv = new DeleteKeyValidator(request);
+     * Delete a single public key from the database. Authentication Required!
+     * 
+     * @param {@link DeleteKeyRequest request}
+     * @return {@link DeleteKeyResponse}
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deleteKey")
+    public DeleteKeyResponse deleteKey(DeleteKeyRequest request) {
+        DeleteKeyResponse response = new DeleteKeyResponse();
+        DeleteKeyValidator dkv = new DeleteKeyValidator(request);
 
-		if (dkv.isValid()) {
-			try {
-				LoginRequest loginRequest = new LoginRequest();
-				loginRequest.setAccount(request.getAccount());
-				LoginResponse loginResponse = new Authentication(
-						this.servletRequest).login(loginRequest);
+        if (dkv.isValid()) {
+            try {
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.setAccount(request.getAccount());
+                LoginResponse loginResponse = new Authentication(
+                        this.servletRequest).login(loginRequest);
 
-				if (loginResponse.isSuccess()) {
-					String query = "DELETE FROM PublicKeys WHERE key_alias = ? AND userId = ?";
-					String[] params = { request.getKeyAlias(),
-							loginResponse.getAccount().getUserId() + "" };
-					ASServer.sql.execute(query, params);
+                if (loginResponse.isSuccess()) {
+                    String query = "DELETE FROM PublicKeys WHERE key_alias = ? AND userId = ?";
+                    String[] params = { request.getKeyAlias(),
+                            loginResponse.getAccount().getUserId() + "" };
+                    ASServer.sql.execute(query, params);
 
-					response.setSuccess(true);
-				} else {
-					for (Message msg : loginResponse.getMessages())
-						response.addMessage(msg);
-				}
-			} catch (Exception e) {
-				response.addMessage(MessagesEnum.SYSTEM_ERROR);
-			}
-		} else {
-			response.addMessages(dkv.getReasons());
-		}
+                    response.setSuccess(true);
+                } else {
+                    for (Message msg : loginResponse.getMessages())
+                        response.addMessage(msg);
+                }
+            } catch (Exception e) {
+                response.addMessage(MessagesEnum.SYSTEM_ERROR);
+            }
+        } else {
+            response.addMessages(dkv.getReasons());
+        }
 
-		return response;
-	}
+        return response;
+    }
+    
+    /**
+     * Delete a single public key from the database. Authentication Required!
+     * 
+     * @param {@link DeleteKeyRequest request}
+     * @return {@link DeleteKeyResponse}
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/panicDeleteKeys")
+    public DeleteKeyResponse panicDeleteKeys(DeleteKeyRequest request) {
+        DeleteKeyResponse response = new DeleteKeyResponse();
+        DeleteKeyValidator dkv = new DeleteKeyValidator(request);
+
+        if (dkv.isValid()) {
+            try {
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.setAccount(request.getAccount());
+                LoginResponse loginResponse = new Authentication(
+                        this.servletRequest).login(loginRequest);
+
+                if (loginResponse.isSuccess()) {
+                    String query = "DELETE FROM PublicKeys WHERE userId = ?";
+                    String[] params = { request.getKeyAlias(),
+                            loginResponse.getAccount().getUserId() + "" };
+                    ASServer.sql.execute(query, params);
+
+                    response.setSuccess(true);
+                } else {
+                    for (Message msg : loginResponse.getMessages())
+                        response.addMessage(msg);
+                }
+            } catch (Exception e) {
+                response.addMessage(MessagesEnum.SYSTEM_ERROR);
+            }
+        } else {
+            response.addMessages(dkv.getReasons());
+        }
+
+        return response;
+    }
 }

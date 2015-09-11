@@ -92,28 +92,54 @@ public class KeyManager extends ASClient {
 	}
 
 	/**
-	 * Delete a single key from the database, re-authentication required
-	 * 
-	 * @param {@link DeleteKeyRequest request}
-	 * @param resource
-	 * @return
-	 * @throws AscException
-	 */
-	public DeleteKeyResponse deleteKey(DeleteKeyRequest request,
-			WebResource resource) throws AscException {
-		try {
-			ClientResponse response = this.post(request,
-					"/crypto/keys/deleteKey", resource);
+     * Delete a single key from the database, re-authentication required
+     * 
+     * @param {@link DeleteKeyRequest request}
+     * @param resource
+     * @return
+     * @throws AscException
+     */
+    public DeleteKeyResponse deleteKey(DeleteKeyRequest request,
+            WebResource resource) throws AscException {
+        try {
+            ClientResponse response = this.post(request,
+                    "/crypto/keys/deleteKey", resource);
 
-			if (response.getStatus() == 200) {
-				return response.getEntity(DeleteKeyResponse.class);
-			} else {
-				throw new AscException("Invalid Response: "
-						+ response.getStatus() + " "
-						+ response.getStatusInfo().getReasonPhrase());
-			}
-		} catch (Exception e) {
-			throw new AscException("Could not complete request", e);
-		}
-	}
+            if (response.getStatus() == 200) {
+                return response.getEntity(DeleteKeyResponse.class);
+            } else {
+                throw new AscException("Invalid Response: "
+                        + response.getStatus() + " "
+                        + response.getStatusInfo().getReasonPhrase());
+            }
+        } catch (Exception e) {
+            throw new AscException("Could not complete request", e);
+        }
+    }
+    
+    /**
+     * Delete a single key from the database, re-authentication required
+     * 
+     * @param {@link DeleteKeyRequest request}
+     * @param resource
+     * @return
+     * @throws AscException
+     */
+    public DeleteKeyResponse panicDeleteKeys(DeleteKeyRequest request,
+            WebResource resource) throws AscException {
+        try {
+            ClientResponse response = this.post(request,
+                    "/crypto/keys/panicDeleteKeys", resource);
+
+            if (response.getStatus() == 200) {
+                return response.getEntity(DeleteKeyResponse.class);
+            } else {
+                throw new AscException("Invalid Response: "
+                        + response.getStatus() + " "
+                        + response.getStatusInfo().getReasonPhrase());
+            }
+        } catch (Exception e) {
+            throw new AscException("Could not complete request", e);
+        }
+    }
 }

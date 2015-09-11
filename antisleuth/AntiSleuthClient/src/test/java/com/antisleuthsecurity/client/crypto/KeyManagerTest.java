@@ -20,7 +20,7 @@ public class KeyManagerTest {
 		KeyManager manager = new KeyManager();
 		char[] STORE_PASSWORD = "PASSWORD".toCharArray();
 		
-		KeystoreManager keyStore = new KeystoreManager("E:\\Projects\\GIT\\AntiSleuth\\antisleuth\\AntiSleuthClient\\target\\testKeystore.jks");
+		KeystoreManager keyStore = new KeystoreManager("D:\\_Personal Git\\AntiSleuth\\antisleuth\\AntiSleuthClient\\target\\testKeystore.jks");
 		keyStore.init(STORE_PASSWORD);
 		
 		RsaCipher rsa = new RsaCipher();
@@ -48,5 +48,10 @@ public class KeyManagerTest {
 		deleteKeyRequest.setKeyAlias("TEST KEY");
 		DeleteKeyResponse deleteKeyResponse = manager.deleteKey(deleteKeyRequest, resource);
 		System.out.println("Delete Key Response: " + deleteKeyResponse.isSuccess());
+		
+		DeleteKeyRequest panicRequest = new DeleteKeyRequest();
+		panicRequest.setAccount(account);
+		DeleteKeyResponse panicDeleteresponse = manager.deleteKey(panicRequest, resource);
+		System.out.println("Panic Delete Keye: " + panicDeleteresponse.isSuccess());
 	}
 }

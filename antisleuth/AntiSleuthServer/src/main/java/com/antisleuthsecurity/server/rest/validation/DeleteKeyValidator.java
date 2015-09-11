@@ -7,10 +7,16 @@ import com.antisleuthsecurity.asc_api.rest.requests.DeleteKeyRequest;
 public class DeleteKeyValidator extends Validator {
 
 	private DeleteKeyRequest request = null;
+	private boolean checkAlias = true;
 
 	public DeleteKeyValidator(DeleteKeyRequest request) {
-		this.request = request;
-	}
+        this.request = request;
+    }
+	
+	public DeleteKeyValidator(DeleteKeyRequest request, boolean checkAlias) {
+        this.request = request;
+        this.checkAlias = checkAlias;
+    }
 
 	@Override
 	public Message[] getReasons() {
@@ -25,7 +31,7 @@ public class DeleteKeyValidator extends Validator {
 					this.messages.add(msg);
 			}
 
-			if (isEmpty(request.getKeyAlias()))
+			if (checkAlias && isEmpty(request.getKeyAlias()))
 				this.messages.add(new Message(MessagesEnum.KEY_ALIAS_MISSING));
 		}
 
@@ -42,7 +48,7 @@ public class DeleteKeyValidator extends Validator {
 				return false;
 			}
 
-			if (isEmpty(request.getKeyAlias()))
+			if (checkAlias && isEmpty(request.getKeyAlias()))
 				return false;
 		} else
 			return false;
