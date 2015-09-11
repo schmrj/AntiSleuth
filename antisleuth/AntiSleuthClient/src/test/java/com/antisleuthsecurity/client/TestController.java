@@ -15,24 +15,27 @@ import com.sun.jersey.api.client.WebResource;
 public class TestController {
 	public static final String connectionUrl = "http://localhost:8080/AS/api";
 	public static WebResource resource = null;
-	
+
 	public static String STORE_PASSWORD = "PASSWORD";
 	public static KeystoreManager keyStore = new KeystoreManager(
 			"E:\\Projects\\GIT\\AntiSleuth\\antisleuth\\AntiSleuthClient\\target\\testKeystore.jks");
-	
-	public static void main(String[] args) throws AscException,
-			KeyStoreException, IOException {
-		keyStore.init(STORE_PASSWORD.toCharArray());
-		
-		resource = new WebServiceClient(connectionUrl).getClient(connectionUrl,
-				false);
 
-		AuthenticationTest authTest = new AuthenticationTest();
-		KeyManagerTest keyManagerTest = new KeyManagerTest();
-		MessageServiceTest mst = new MessageServiceTest();
+	public static void main(String[] args) {
+		try {
+			keyStore.init(STORE_PASSWORD.toCharArray());
 
-		authTest.testAuthentication(resource);
-		keyManagerTest.testKeyManager(authTest.getAccount(), resource);
-		mst.run(authTest.getAccount(), resource);
+			resource = new WebServiceClient(connectionUrl).getClient(
+					connectionUrl, false);
+
+			AuthenticationTest authTest = new AuthenticationTest();
+			KeyManagerTest keyManagerTest = new KeyManagerTest();
+			MessageServiceTest mst = new MessageServiceTest();
+
+			authTest.testAuthentication(resource);
+			keyManagerTest.testKeyManager(authTest.getAccount(), resource);
+			mst.run(authTest.getAccount(), resource);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

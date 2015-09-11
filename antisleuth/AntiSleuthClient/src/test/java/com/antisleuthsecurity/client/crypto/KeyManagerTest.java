@@ -3,6 +3,7 @@ package com.antisleuthsecurity.client.crypto;
 import java.security.KeyPair;
 import java.security.KeyStoreException;
 
+import com.antisleuthsecurity.asc_api.certificates.keymanage.KeyUtils;
 import com.antisleuthsecurity.asc_api.cryptography.ciphers.asymmetric.RsaCipher;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
@@ -24,8 +25,9 @@ public class KeyManagerTest {
 		KeyPair pair = rsa.generateKeyPair();
 
 		try {
+			KeyUtils ku = new KeyUtils(TestController.keyStore.getKeyStore());
 			TestController.keyStore.putKey(alias, TestController.STORE_PASSWORD.toCharArray(), pair,
-					TestController.keyStore.getSigningCertificate());
+					ku.getAntiSleuthCertificate());
 		} catch (Exception x) {
 
 		}
