@@ -118,6 +118,7 @@ public class MessageService extends AsRestApi {
 								.getString("msgCipherInstance");
 
 						MessageParts parts = new MessageParts();
+						parts.setMessageId(msgId);
 						parts.setKeyCipherInstance(keyCipherInstance);
 						parts.setMessageCipherInstance(msgCipherInstance);
 						parts.addKey(myAccount.getUsername(), key);

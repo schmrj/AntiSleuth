@@ -3,7 +3,6 @@ package com.antisleuthsecurity.asc_api.rest.crypto;
 import java.io.Serializable;
 import java.util.TreeMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
@@ -14,7 +13,7 @@ public class MessageParts implements Serializable {
 	private String messageCipherInstance = null;
 
 	private UserAccount from = null;
-
+	private Integer messageId = null;
 	private TreeMap<String, byte[]> keys = new TreeMap<String, byte[]>();
 	private TreeMap<String, Object> options = new TreeMap<String, Object>();
 	private byte[] message = null;
@@ -78,4 +77,13 @@ public class MessageParts implements Serializable {
 	public void addOption(String name, Object item) {
 		this.options.put(name, item);
 	}
+
+	public Integer getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(Integer messageId) {
+		this.messageId = messageId;
+	}
+
 }
