@@ -137,7 +137,7 @@ public class RsaCipherBuilder {
 			CipherInstance[] instances = RsaCipher.CipherInstance.values();
 
 			for (CipherInstance inst : instances) {
-				if (inst.toString().equalsIgnoreCase(cipherInstance)) {
+				if (inst.getValue().equalsIgnoreCase(cipherInstance)) {
 					this.instance = inst;
 					break;
 				} else

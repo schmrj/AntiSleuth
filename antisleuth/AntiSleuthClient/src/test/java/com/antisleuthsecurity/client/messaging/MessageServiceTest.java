@@ -1,6 +1,7 @@
 package com.antisleuthsecurity.client.messaging;
 
 import java.io.IOException;
+import java.security.KeyStoreException;
 import java.util.Calendar;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,13 +23,14 @@ import com.antisleuthsecurity.asc_api.rest.requests.SendMessageRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.GetMessageResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SendMessageResponse;
+import com.antisleuthsecurity.client.TestController;
 import com.antisleuthsecurity.client.crypto.KeyManager;
 import com.sun.jersey.api.client.WebResource;
 
 public class MessageServiceTest {
 
 	public void run(UserAccount account, WebResource resource)
-			throws AscException, IOException {
+			throws AscException, IOException, KeyStoreException {
 		Messaging msging = new Messaging();
 		KeyManager manager = new KeyManager();
 
@@ -60,37 +62,47 @@ public class MessageServiceTest {
 
 			System.out
 					.println("Have framwork in place to encrypt the message!");
-			
+
 			MessageParts msgParts = new MessageParts();
 			SendMessageRequest sendMsgRequest = new SendMessageRequest();
 			msgParts.setMessageCipherInstance(aesCipher.getInstance());
 			msgParts.setKeyCipherInstance(rsaCipher.getCipherInstance());
-			
-			byte[] encryptedKey = new Cryptographer(rsaCipher).process(aesCipher.getKey());
+
+			byte[] encryptedKey = new Cryptographer(rsaCipher)
+					.process(aesCipher.getKey());
 			msgParts.addKey(account.getUsername(), encryptedKey);
 			msgParts.addOption("IV", aesCipher.getIv());
 			msgParts.addOption("KeyAlias", key.getAlias());
-			
+
 			UserAccount from = new UserAccount();
 			from.setUserId(account.getUserId());
 			from.setUsername(account.getUsername());
 			msgParts.setFrom(from);
-			
+
 			SecureMessage secureMsg = new SecureMessage();
 			secureMsg.setFrom(from.getUsername());
 			secureMsg.setSubject("This is a test message");
 			secureMsg.setBody("This is the body of a test message");
 			secureMsg.setSent(Calendar.getInstance().getTime());
 			String msg = new ObjectMapper().writeValueAsString(secureMsg);
-			byte[] encodedMsg = new Cryptographer(aesCipher).process(msg.getBytes());
+			byte[] encodedMsg = new Cryptographer(aesCipher).process(msg
+					.getBytes());
 			msgParts.addMessage(encodedMsg);
-			
+
 			sendMsgRequest.setMsgParts(msgParts);
-			SendMessageResponse sndMsgResponse = msging.sendMessage(sendMsgRequest, resource);
+			SendMessageResponse sndMsgResponse = msging.sendMessage(
+					sendMsgRequest, resource);
 			System.out.println("Send Message: " + sndMsgResponse.isSuccess());
-			
+
 			GetMessageResponse getMsgResponse = msging.getMessages(resource);
-			System.out.println("Get Message Response: " + getMsgResponse.isSuccess());
+			System.out.println("Get Message Response: "
+					+ getMsgResponse.isSuccess());
+
+			MessageDecoder decoder = new MessageDecoder(
+					getMsgResponse.getMsgs(), account, TestController.keyStore,
+					TestController.STORE_PASSWORD.toCharArray());
+
+			decoder.decodeAll();
 		}
 	}
 }
