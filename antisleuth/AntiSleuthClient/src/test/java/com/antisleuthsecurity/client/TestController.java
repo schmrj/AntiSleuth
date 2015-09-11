@@ -1,5 +1,6 @@
 package com.antisleuthsecurity.client;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyStoreException;
 
@@ -14,17 +15,17 @@ public class TestController {
 	public static final String connectionUrl = "http://localhost:8080/AS/api";
 	public static WebResource resource = null;
 
-	public static void main(String[] args) throws UnsupportedEncodingException,
-			AscException, KeyStoreException {
+	public static void main(String[] args) throws AscException,
+			KeyStoreException, IOException {
 		resource = new WebServiceClient(connectionUrl).getClient(connectionUrl,
 				false);
 
 		AuthenticationTest authTest = new AuthenticationTest();
 		KeyManagerTest keyManagerTest = new KeyManagerTest();
 		MessageServiceTest mst = new MessageServiceTest();
-		
+
 		authTest.testAuthentication(resource);
-//		keyManagerTest.testKeyManager(authTest.getAccount(), resource);
+		// keyManagerTest.testKeyManager(authTest.getAccount(), resource);
 		mst.run(authTest.getAccount(), resource);
 	}
 }

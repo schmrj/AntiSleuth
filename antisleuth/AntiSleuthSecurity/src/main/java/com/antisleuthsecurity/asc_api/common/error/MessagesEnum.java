@@ -27,7 +27,14 @@ public enum MessagesEnum implements Serializable {
 	MISSING_USERID (3000009, MessageType.ERROR, "USER ID is required"),
 	
 	// 4 000 000 - 4 009 999 = Key Related Errors
-	KEY_ALIAS_EXISTS (4000001, MessageType.ERROR, "Key Alias Already Exists");
+	KEY_ALIAS_EXISTS (4000001, MessageType.ERROR, "Key Alias Already Exists"),
+	
+	// 5 000 000 - 5 009 999 = Message Related Errors
+	MESSAGE_REQUIRED (5000001, MessageType.ERROR, "Message is required, cannot send blank message"),
+	MESSAGE_FROM_REQUIRED (5000002, MessageType.ERROR, "From is required, cannot send message without a from"),
+	MESSAGE_KEY_INST_REQUIRED (5000003, MessageType.ERROR, "Key Cipher Instance is required"),
+	MESSAGE_MSG_INST_REQUIRED (5000004, MessageType.ERROR, "Message Cipher Instance is required"),
+	MESSAGE_KEY_REQUIRED (5000005, MessageType.ERROR, "Keys are required!");
 	
 	private final Integer messageId;
 	private final String message;

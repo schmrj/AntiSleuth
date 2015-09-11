@@ -3,6 +3,7 @@ package com.antisleuthsecurity.server.rest.validation;
 import java.util.ArrayList;
 
 import com.antisleuthsecurity.asc_api.common.error.Message;
+import com.antisleuthsecurity.asc_api.rest.UserAccount;
 
 public abstract class Validator {
 
@@ -10,6 +11,14 @@ public abstract class Validator {
 
 	protected boolean isEmpty(String value) {
 		if (value != null && !value.isEmpty())
+			return false;
+		return true;
+	}
+	
+	protected boolean isEmpty(UserAccount value) {
+		if (value != null && !isEmpty(value.getUsername()))
+			return false;
+		if (value != null && !isEmpty(value.getUserId()))
 			return false;
 		return true;
 	}
