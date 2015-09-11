@@ -141,7 +141,7 @@ public class AesCipherBuilder {
 			CipherInstance[] instances = CipherInstance.values();
 
 			for (CipherInstance inst : instances) {
-				if (inst.toString().equalsIgnoreCase(instance)) {
+				if (inst.getValue().equalsIgnoreCase(instance)) {
 					cInstance = inst;
 					break;
 				} else
