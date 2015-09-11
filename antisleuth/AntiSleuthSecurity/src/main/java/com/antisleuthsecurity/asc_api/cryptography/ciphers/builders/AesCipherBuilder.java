@@ -12,16 +12,17 @@ public class AesCipherBuilder {
 
 	}
 
-	public static SetStrength setInstance(CipherInstance instance){
+	public static SetStrength setInstance(CipherInstance instance) {
 		return new Builder().setInstance(instance);
 	}
-	
-	public static SetStrength setInstance(String instance){
+
+	public static SetStrength setInstance(String instance) {
 		return new Builder().setInstance(instance);
 	}
-	
+
 	public static interface SetInstance {
 		SetStrength setInstance(CipherInstance instance);
+
 		SetStrength setInstance(String instance);
 	}
 
@@ -46,6 +47,10 @@ public class AesCipherBuilder {
 	}
 
 	public static interface GenerateKey {
+		SetCipherMode generateKeys() throws AscException;
+	}
+
+	public static interface SetCipherMode {
 		GetBuilder setEncrypt() throws AscException;
 
 		GetBuilder setDecrypt() throws AscException;
@@ -56,7 +61,7 @@ public class AesCipherBuilder {
 	}
 
 	static class Builder implements SetInstance, SetStrength, SetMode,
-			SetInitializationVector, SetKey, GenerateKey, GetBuilder {
+			SetInitializationVector, SetKey, GenerateKey, GetBuilder, SetCipherMode {
 
 		private AesCipher cipher = new AesCipher();
 		private Strength strength = Strength.S128;
@@ -64,24 +69,24 @@ public class AesCipherBuilder {
 		private byte[] iv = null;
 		private int mode;
 		private CipherInstance instance;
-		
+
 		public AesCipher build() throws AscException {
 			this.cipher.setInstance(instance);
 			this.cipher.setMode(mode);
-			
-			if(this.key != null){
+
+			if (this.key != null) {
 				this.cipher.setKey(key);
 				this.cipher.setIv(iv);
-			}else
+			} else
 				this.cipher.setStrength(strength);
 			return cipher;
 		}
 
-		public void generateKeyParts() throws AscException{
+		public void generateKeyParts() throws AscException {
 			cipher.generateKey();
 			cipher.generateIV();
 		}
-		
+
 		public GetBuilder setEncrypt() throws AscException {
 			generateKeyParts();
 			setEncryptMode();
@@ -91,6 +96,14 @@ public class AesCipherBuilder {
 		public GetBuilder setDecrypt() throws AscException {
 			generateKeyParts();
 			setDecryptMode();
+			return this;
+		}
+
+		public SetCipherMode generateKeys() throws AscException {
+			AesCipher cipher = new AesCipher(this.strength);
+			this.cipher.setKey(cipher.generateKey());
+			this.cipher.setIv(cipher.generateIV());
+
 			return this;
 		}
 
@@ -122,19 +135,19 @@ public class AesCipherBuilder {
 			this.instance = instance;
 			return this;
 		}
-		
-		public SetStrength setInstance(String instance){
+
+		public SetStrength setInstance(String instance) {
 			CipherInstance cInstance = null;
 			CipherInstance[] instances = CipherInstance.values();
-			
-			for(CipherInstance inst : instances){
-				if(inst.toString().equalsIgnoreCase(instance)){
+
+			for (CipherInstance inst : instances) {
+				if (inst.toString().equalsIgnoreCase(instance)) {
 					cInstance = inst;
 					break;
-				}else
+				} else
 					cInstance = CipherInstance.AESCBCPKCS5Padding;
 			}
-			
+
 			return new Builder().setInstance(cInstance);
 		}
 
@@ -142,6 +155,6 @@ public class AesCipherBuilder {
 			this.strength = strength;
 			return this;
 		}
-		
+
 	}
 }

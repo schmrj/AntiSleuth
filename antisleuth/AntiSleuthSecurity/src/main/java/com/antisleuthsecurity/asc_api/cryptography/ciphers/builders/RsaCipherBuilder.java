@@ -1,14 +1,17 @@
 package com.antisleuthsecurity.asc_api.cryptography.ciphers.builders;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 
 import com.antisleuthsecurity.asc_api.cryptography.ciphers.asymmetric.RsaCipher;
 import com.antisleuthsecurity.asc_api.cryptography.ciphers.asymmetric.RsaCipher.CipherInstance;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
+import com.antisleuthsecurity.asc_api.utilities.ASLog;
 
 public class RsaCipherBuilder {
 
@@ -22,26 +25,32 @@ public class RsaCipherBuilder {
 
 	public static interface SetInstance {
 		SetStrength setInstance(CipherInstance instance);
+
 		SetStrength setInstance(String instance);
 	}
 
 	public static interface SetStrength {
 		GenerateKeyPair setStrength(int strength);
+
 		SetCipherMode strengthByKey();
 	}
 
 	public static interface SetCipherMode {
 		SetPublicKey setEncrypt();
+
 		SetPrivateKey setDecrypt();
 	}
 
 	public static interface GenerateKeyPair {
 		GetBuilder setEncryptMode();
+
 		GetBuilder setDecryptMode();
 	}
 
 	public static interface SetPublicKey {
 		GetBuilder setPublicKey(PublicKey key);
+
+		GetBuilder setPublicKey(byte[] key);
 	}
 
 	public static interface SetPrivateKey {
@@ -66,15 +75,14 @@ public class RsaCipherBuilder {
 			cipher.setInstance(instance);
 			cipher.setMode(mode);
 
-			if(privateKey == null && publicKey == null){
+			if (privateKey == null && publicKey == null) {
 				KeyPair pair = cipher.generateKeyPair();
-			}else{
+			} else {
 				if (mode == Cipher.ENCRYPT_MODE)
 					cipher.setPublicKey(publicKey);
 				else
 					cipher.setPrivateKey(privateKey);
 			}
-		
 
 			return cipher;
 		}
@@ -86,6 +94,18 @@ public class RsaCipherBuilder {
 
 		public GetBuilder setPublicKey(PublicKey key) {
 			this.publicKey = key;
+			return this;
+		}
+
+		public GetBuilder setPublicKey(byte[] key) {
+			try {
+				PublicKey pKey = null;
+				pKey = KeyFactory.getInstance("RSA").generatePublic(
+						new X509EncodedKeySpec(key));
+				this.publicKey = pKey;
+			} catch (Exception e) {
+				ASLog.error("Could not set public key", e);
+			}
 			return this;
 		}
 
@@ -112,18 +132,18 @@ public class RsaCipherBuilder {
 			this.instance = instance;
 			return this;
 		}
-		
-		public SetStrength setInstance(String cipherInstance){
+
+		public SetStrength setInstance(String cipherInstance) {
 			CipherInstance[] instances = RsaCipher.CipherInstance.values();
-			
-			for(CipherInstance inst : instances){
-				if(inst.toString().equalsIgnoreCase(cipherInstance)){
+
+			for (CipherInstance inst : instances) {
+				if (inst.toString().equalsIgnoreCase(cipherInstance)) {
 					this.instance = inst;
 					break;
-				}else
+				} else
 					this.instance = CipherInstance.RSANONEOAEPWithMD5AndMGF1Padding;
 			}
-			
+
 			return this;
 		}
 

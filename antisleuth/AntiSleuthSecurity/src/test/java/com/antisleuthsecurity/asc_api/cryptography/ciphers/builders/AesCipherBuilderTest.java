@@ -19,6 +19,7 @@ public class AesCipherBuilderTest {
 	public void testAesCipherBuilderEncrypt() throws AscException {
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		
@@ -29,6 +30,7 @@ public class AesCipherBuilderTest {
 	public void testAesCipherBuilderDecrypt() throws AscException {
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setDecrypt()
 				.build();
 		
@@ -50,6 +52,7 @@ public class AesCipherBuilderTest {
 	public void testAesCipherBuilder() throws AscException, IllegalBlockSizeException, BadPaddingException {
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		assertNotNull(cipher);

@@ -42,16 +42,16 @@ public class KeyManagerTest {
 		
 		GetKeyResponse getAllKeyResponse = manager.getAllUserKey(getKeyRequest, resource);
 		System.out.println("Get All Keys Response: " + getKeyResponse.isSuccess());
-		
-		DeleteKeyRequest deleteKeyRequest = new DeleteKeyRequest();
-		deleteKeyRequest.setAccount(account);
-		deleteKeyRequest.setKeyAlias("TEST KEY");
-		DeleteKeyResponse deleteKeyResponse = manager.deleteKey(deleteKeyRequest, resource);
-		System.out.println("Delete Key Response: " + deleteKeyResponse.isSuccess());
-		
-		DeleteKeyRequest panicRequest = new DeleteKeyRequest();
-		panicRequest.setAccount(account);
-		DeleteKeyResponse panicDeleteresponse = manager.panicDeleteKeys(panicRequest, resource);
-		System.out.println("Panic Delete Keye: " + panicDeleteresponse.isSuccess());
+//		
+//		DeleteKeyRequest deleteKeyRequest = new DeleteKeyRequest();
+//		deleteKeyRequest.setAccount(account);
+//		deleteKeyRequest.setKeyAlias("TEST KEY");
+//		DeleteKeyResponse deleteKeyResponse = manager.deleteKey(deleteKeyRequest, resource);
+//		System.out.println("Delete Key Response: " + deleteKeyResponse.isSuccess());
+//		
+//		DeleteKeyRequest panicRequest = new DeleteKeyRequest();
+//		panicRequest.setAccount(account);
+//		DeleteKeyResponse panicDeleteresponse = manager.panicDeleteKeys(panicRequest, resource);
+//		System.out.println("Panic Delete Keye: " + panicDeleteresponse.isSuccess());
 	}
 }

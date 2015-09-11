@@ -23,6 +23,7 @@ public class CryptographerTest {
 		String toEncrypt = "This is a string to encrypt";
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		Assert.assertNotNull(cipher);
@@ -41,6 +42,7 @@ public class CryptographerTest {
 	public void testGetCipher() throws AscException{
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		Assert.assertNotNull(cipher);
@@ -55,6 +57,7 @@ public class CryptographerTest {
 		String toEncrypt = "This is a string to encrypt";
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		Assert.assertNotNull(cipher);
@@ -74,6 +77,7 @@ public class CryptographerTest {
 		String toEncryptString = "This is my super secret text";
 		AesCipher cipher = AesCipherBuilder.setInstance(CipherInstance.AESCBCPKCS5Padding)
 				.setStrength(Strength.S128)
+				.generateKeys()
 				.setEncrypt()
 				.build();
 		Assert.assertNotNull(cipher);
