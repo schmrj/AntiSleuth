@@ -3,6 +3,7 @@ package com.antisleuthsecurity.server.rest.messaging;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +18,7 @@ import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.requests.SendMessageRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.SendMessageResponse;
 import com.antisleuthsecurity.server.ASServer;
+import com.antisleuthsecurity.server.PropsEnum;
 import com.antisleuthsecurity.server.rest.AsRestApi;
 import com.antisleuthsecurity.server.rest.auth.AuthenticationUtil;
 import com.antisleuthsecurity.server.rest.validation.SendMessageValidator;
@@ -30,39 +32,51 @@ public class MessageService extends AsRestApi {
 	@Path("/send")
 	public SendMessageResponse sendMessage(SendMessageRequest request) {
 		SendMessageResponse response = new SendMessageResponse();
-		SendMessageValidator smv = new SendMessageValidator(request);
+		HttpSession session = this.servletRequest.getSession(false);
+		if (session != null) {
+			if (session.getAttribute(PropsEnum.USER_ACCOUNT.getProperty()) == null) {
+				response.addMessage(MessagesEnum.NOT_AUTHENTICATED);
+			} else {
+				SendMessageValidator smv = new SendMessageValidator(request);
 
-		if (smv.isValid()) {
-			TreeMap<String, byte[]> keys = request.getKeys();
-			TreeMap<String, byte[]> msgs = request.getMessages();
-			TreeMap<String, Object> options = request.getOptions();
+				if (smv.isValid()) {
+					TreeMap<String, byte[]> keys = request.getKeys();
+					TreeMap<String, byte[]> msgs = request.getMessages();
+					TreeMap<String, Object> options = request.getOptions();
 
-			Iterator<String> keySet = keys.keySet().iterator();
-			Iterator<String> optionSet = options.keySet().iterator();
+					Iterator<String> keySet = keys.keySet().iterator();
+					Iterator<String> optionSet = options.keySet().iterator();
 
-			String keyCipher = request.getKeyCipherInstance();
-			String msgCipher = request.getMessageCipherInstance();
-			UserAccount from = request.getFrom();
+					String keyCipher = request.getKeyCipherInstance();
+					String msgCipher = request.getMessageCipherInstance();
+					UserAccount from = request.getFrom();
 
-			while (keySet.hasNext()) {
-				String keyName = keySet.next();
-				byte[] key = Base64.encode(keys.get(keyName));
-				byte[] msg = Base64.encode(msgs.get(keyName));
-				try{
-					String option = new ObjectMapper().writeValueAsString(options);
-					Integer to = new AuthenticationUtil().findUserId(keyName, ASServer.sql);
-					
-					String query = "INSERT INTO Messages ([to], [from], message, [key], keyCipherInstance, msgCipherInstance, options) VALUES (?, ?, ?, ?, ?, ?, ?)";
-					String[] params = { to + "", request.getFrom().getUserId() + "", new String(msg), new String(key), keyCipher, msgCipher, option };
-					boolean pass = ASServer.sql.execute(query, params);
-					
-					response.setSuccess(true);
-				}catch(Exception e){
-					response.addMessage(MessagesEnum.DATABASE_ERROR);
+					while (keySet.hasNext()) {
+						String keyName = keySet.next();
+						byte[] key = Base64.encode(keys.get(keyName));
+						byte[] msg = Base64.encode(msgs.get(keyName));
+						try {
+							String option = new ObjectMapper()
+									.writeValueAsString(options);
+							Integer to = new AuthenticationUtil().findUserId(
+									keyName, ASServer.sql);
+
+							String query = "INSERT INTO Messages ([to], [from], message, [key], keyCipherInstance, msgCipherInstance, options) VALUES (?, ?, ?, ?, ?, ?, ?)";
+							String[] params = { to + "",
+									request.getFrom().getUserId() + "",
+									new String(msg), new String(key),
+									keyCipher, msgCipher, option };
+							boolean pass = ASServer.sql.execute(query, params);
+
+							response.setSuccess(true);
+						} catch (Exception e) {
+							response.addMessage(MessagesEnum.DATABASE_ERROR);
+						}
+					}
+				} else {
+					response.addMessages(smv.getReasons());
 				}
 			}
-		} else {
-			response.addMessages(smv.getReasons());
 		}
 
 		response.addMessage(MessagesEnum.METHOD_NOT_IMPLEMENTED);
