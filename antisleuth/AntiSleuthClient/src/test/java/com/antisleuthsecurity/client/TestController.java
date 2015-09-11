@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyStoreException;
 
+import com.antisleuthsecurity.asc_api.certificates.keymanage.KeystoreManager;
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.client.auth.AuthenticationTest;
 import com.antisleuthsecurity.client.common.WebServiceClient;
@@ -14,9 +15,15 @@ import com.sun.jersey.api.client.WebResource;
 public class TestController {
 	public static final String connectionUrl = "http://localhost:8080/AS/api";
 	public static WebResource resource = null;
-
+	
+	public static String STORE_PASSWORD = "PASSWORD";
+	public static KeystoreManager keyStore = new KeystoreManager(
+			"E:\\Projects\\GIT\\AntiSleuth\\antisleuth\\AntiSleuthClient\\target\\testKeystore.jks");
+	
 	public static void main(String[] args) throws AscException,
 			KeyStoreException, IOException {
+		keyStore.init(STORE_PASSWORD.toCharArray());
+		
 		resource = new WebServiceClient(connectionUrl).getClient(connectionUrl,
 				false);
 
@@ -25,7 +32,7 @@ public class TestController {
 		MessageServiceTest mst = new MessageServiceTest();
 
 		authTest.testAuthentication(resource);
-		// keyManagerTest.testKeyManager(authTest.getAccount(), resource);
+		keyManagerTest.testKeyManager(authTest.getAccount(), resource);
 		mst.run(authTest.getAccount(), resource);
 	}
 }
