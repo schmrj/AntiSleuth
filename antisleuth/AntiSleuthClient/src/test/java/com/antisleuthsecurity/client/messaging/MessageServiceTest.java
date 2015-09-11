@@ -15,10 +15,12 @@ import com.antisleuthsecurity.asc_api.cryptography.ciphers.symmetric.AesCipher.S
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.UserAccount;
 import com.antisleuthsecurity.asc_api.rest.crypto.ASKey;
+import com.antisleuthsecurity.asc_api.rest.crypto.MessageParts;
 import com.antisleuthsecurity.asc_api.rest.crypto.SecureMessage;
 import com.antisleuthsecurity.asc_api.rest.requests.GetKeyRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.SendMessageRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.GetKeyResponse;
+import com.antisleuthsecurity.asc_api.rest.responses.GetMessageResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SendMessageResponse;
 import com.antisleuthsecurity.client.crypto.KeyManager;
 import com.sun.jersey.api.client.WebResource;
@@ -59,19 +61,20 @@ public class MessageServiceTest {
 			System.out
 					.println("Have framwork in place to encrypt the message!");
 			
+			MessageParts msgParts = new MessageParts();
 			SendMessageRequest sendMsgRequest = new SendMessageRequest();
-			sendMsgRequest.setMessageCipherInstance(aesCipher.getInstance());
-			sendMsgRequest.setKeyCipherInstance(rsaCipher.getCipherInstance());
+			msgParts.setMessageCipherInstance(aesCipher.getInstance());
+			msgParts.setKeyCipherInstance(rsaCipher.getCipherInstance());
 			
 			byte[] encryptedKey = new Cryptographer(rsaCipher).process(aesCipher.getKey());
-			sendMsgRequest.addKey(account.getUsername(), encryptedKey);
-			sendMsgRequest.addOption("IV", aesCipher.getIv());
-			sendMsgRequest.addOption("KeyAlias", key.getAlias());
+			msgParts.addKey(account.getUsername(), encryptedKey);
+			msgParts.addOption("IV", aesCipher.getIv());
+			msgParts.addOption("KeyAlias", key.getAlias());
 			
 			UserAccount from = new UserAccount();
 			from.setUserId(account.getUserId());
 			from.setUsername(account.getUsername());
-			sendMsgRequest.setFrom(from);
+			msgParts.setFrom(from);
 			
 			SecureMessage secureMsg = new SecureMessage();
 			secureMsg.setFrom(from.getUsername());
@@ -80,10 +83,14 @@ public class MessageServiceTest {
 			secureMsg.setSent(Calendar.getInstance().getTime());
 			String msg = new ObjectMapper().writeValueAsString(secureMsg);
 			byte[] encodedMsg = new Cryptographer(aesCipher).process(msg.getBytes());
-			sendMsgRequest.addMessage(account.getUsername(), encodedMsg);
+			msgParts.addMessage(encodedMsg);
 			
+			sendMsgRequest.setMsgParts(msgParts);
 			SendMessageResponse sndMsgResponse = msging.sendMessage(sendMsgRequest, resource);
 			System.out.println("Send Message: " + sndMsgResponse.isSuccess());
+			
+			GetMessageResponse getMsgResponse = msging.getMessages(resource);
+			System.out.println("Get Message Response: " + getMsgResponse.isSuccess());
 		}
 	}
 }

@@ -7,11 +7,20 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class ASClient {
-	protected ClientResponse post(ASRequest request, String path, WebResource resource){
+	protected ClientResponse post(ASRequest request, String path,
+			WebResource resource) {
 		ClientResponse response = resource.path(path)
 				.type(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class, request);
-		
+
+		return response;
+	}
+
+	protected ClientResponse get(String path,
+			WebResource resource) {
+		ClientResponse response = resource.path(path)
+				.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
 		return response;
 	}
 }

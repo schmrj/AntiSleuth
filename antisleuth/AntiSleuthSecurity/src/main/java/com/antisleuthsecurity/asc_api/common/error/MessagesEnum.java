@@ -34,7 +34,8 @@ public enum MessagesEnum implements Serializable {
 	MESSAGE_FROM_REQUIRED (5000002, MessageType.ERROR, "From is required, cannot send message without a from"),
 	MESSAGE_KEY_INST_REQUIRED (5000003, MessageType.ERROR, "Key Cipher Instance is required"),
 	MESSAGE_MSG_INST_REQUIRED (5000004, MessageType.ERROR, "Message Cipher Instance is required"),
-	MESSAGE_KEY_REQUIRED (5000005, MessageType.ERROR, "Keys are required!");
+	MESSAGE_KEY_REQUIRED (5000005, MessageType.ERROR, "Keys are required!"),
+	MESSAGE_NONE_AVAILABLE (5000006, MessageType.ERROR, "No Available Messages!");
 	
 	private final Integer messageId;
 	private final String message;

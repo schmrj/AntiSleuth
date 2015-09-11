@@ -42,6 +42,23 @@ public class AuthenticationUtil {
 		rs.close();
 		return userid;
 	}
+	
+	public UserAccount findUserById(Integer userId, MSSQL sql) throws SQLException {
+		Integer userid = null;
+
+		String query = "SELECT id, username FROM Users WHERE id=?";
+		ResultSet rs = sql.query(query, new String[] { userId + "" });
+
+		UserAccount account = new UserAccount();
+		while (rs.next()) {
+			userid = rs.getInt("id");
+			account.setUserId(userid);
+			account.setUsername(rs.getString("username"));
+		}
+
+		rs.close();
+		return account;
+	}
 
 	public boolean isAccountLocked(Integer userId, MSSQL sql) throws SQLException {
 		boolean isLocked = false;

@@ -2,6 +2,7 @@ package com.antisleuthsecurity.client.messaging;
 
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
 import com.antisleuthsecurity.asc_api.rest.requests.SendMessageRequest;
+import com.antisleuthsecurity.asc_api.rest.responses.GetMessageResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SendMessageResponse;
 import com.antisleuthsecurity.client.ASClient;
 import com.sun.jersey.api.client.ClientResponse;
@@ -17,6 +18,22 @@ public class Messaging extends ASClient {
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(SendMessageResponse.class);
+			} else {
+				throw new AscException("Invalid Response: "
+						+ response.getStatus() + " "
+						+ response.getStatusInfo().getReasonPhrase());
+			}
+		} catch (Exception e) {
+			throw new AscException("Could not complete request", e);
+		}
+	}
+	
+	public GetMessageResponse getMessages(WebResource resource) throws AscException {
+		try {
+			ClientResponse response = this.get("/messaging/receive", resource);
+
+			if (response.getStatus() == 200) {
+				return response.getEntity(GetMessageResponse.class);
 			} else {
 				throw new AscException("Invalid Response: "
 						+ response.getStatus() + " "
