@@ -6,6 +6,7 @@
 package com.antisleuthsecurity.client.messaging;
 
 import com.antisleuthsecurity.asc_api.exceptions.AscException;
+import com.antisleuthsecurity.asc_api.rest.requests.GetMessageRequest;
 import com.antisleuthsecurity.asc_api.rest.requests.SendMessageRequest;
 import com.antisleuthsecurity.asc_api.rest.responses.GetMessageResponse;
 import com.antisleuthsecurity.asc_api.rest.responses.SendMessageResponse;
@@ -56,6 +57,32 @@ public class Messaging extends ASClient {
 			throws AscException {
 		try {
 			ClientResponse response = this.get("/messaging/receive", resource);
+
+			if (response.getStatus() == 200) {
+				return response.getEntity(GetMessageResponse.class);
+			} else {
+				throw new AscException("Invalid Response: "
+						+ response.getStatus() + " "
+						+ response.getStatusInfo().getReasonPhrase());
+			}
+		} catch (Exception e) {
+			throw new AscException("Could not complete request", e);
+		}
+	}
+
+	/**
+	 * Retreive single messages sent to the current user by message id
+	 * 
+	 * @param {@link GetMessageeREquest request}
+	 * @param {@link WebResource resource}
+	 * @return {@link GetMessageResponse}
+	 * @throws AscException
+	 */
+	public GetMessageResponse getMessages(GetMessageRequest request,
+			WebResource resource) throws AscException {
+		try {
+			ClientResponse response = this.post(request,
+					"/messaging/getMessage", resource);
 
 			if (response.getStatus() == 200) {
 				return response.getEntity(GetMessageResponse.class);
