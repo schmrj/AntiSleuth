@@ -32,7 +32,7 @@ public class TestController {
 			MessageServiceTest mst = new MessageServiceTest();
 
 			authTest.testAuthentication(resource);
-			keyManagerTest.testKeyManager(authTest.getAccount(), resource);
+//			keyManagerTest.testKeyManager(authTest.getAccount(), resource);
 			mst.run(authTest.getAccount(), resource);
 		} catch (Exception e) {
 			e.printStackTrace();

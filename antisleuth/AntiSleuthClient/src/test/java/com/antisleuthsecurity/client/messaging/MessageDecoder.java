@@ -55,7 +55,6 @@ public class MessageDecoder {
 
 		Cryptographer keyCrytpo = new Cryptographer(rsaCipher);
 		byte[] aesKey = keyCrytpo.process(key);
-		System.out.println("Got AES Key");
 
 		AesCipher aesCipher = AesCipherBuilder.setInstance(msgInstance)
 				.setStrengthByKey().setDecryptMode()
@@ -72,7 +71,6 @@ public class MessageDecoder {
 		while (messageKeys.hasNext()) {
 			try {
 				Integer msgKey = messageKeys.next();
-
 				MessageParts part = this.messages.get(msgKey);
 				this.decodeMsg(part);
 			} catch (Exception e) {
