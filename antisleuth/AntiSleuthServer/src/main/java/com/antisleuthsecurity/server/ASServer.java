@@ -5,6 +5,8 @@
  */
 package com.antisleuthsecurity.server;
 
+import java.util.UUID;
+
 import javax.servlet.ServletException;
 
 import com.antisleuthsecurity.asc_api.utilities.ASLog;
@@ -21,6 +23,7 @@ public class ASServer extends ServletContainer {
 	public static KeyManagementThread keyThread = null;
 	public static Properties props = null;
 	public static MSSQL sql = null;
+	public static String serverId = null;
 
 	private ASystem system = new ASystem();
 
@@ -46,6 +49,20 @@ public class ASServer extends ServletContainer {
 		ASLog.info("Setting up database connection");
 		this.sql = system.initDB();
 		connectDB();
+
+		this.serverId = ServerSettings.ServerId.getValue();
+		if (this.serverId == null || this.serverId.isEmpty()) {
+			try {
+				UUID newServerId = UUID.randomUUID();
+				this.serverId = newServerId.toString();
+				ServerSettings.ServerId.setValue(this.serverId);
+			} catch (Exception e) {
+				ASLog.error("Could not generate a server code, therefore "
+						+ "server cannot be added to hive network!");
+			}
+		}
+		
+		ASLog.info("Server ID: " + this.serverId);
 	}
 
 	private void connectDB() {

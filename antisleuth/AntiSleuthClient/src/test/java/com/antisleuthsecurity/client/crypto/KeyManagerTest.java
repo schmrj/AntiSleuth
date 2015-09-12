@@ -2,6 +2,7 @@ package com.antisleuthsecurity.client.crypto;
 
 import java.security.KeyPair;
 import java.security.KeyStoreException;
+import java.security.PublicKey;
 
 import com.antisleuthsecurity.asc_api.certificates.keymanage.KeyUtils;
 import com.antisleuthsecurity.asc_api.cryptography.ciphers.asymmetric.RsaCipher;
@@ -19,6 +20,14 @@ public class KeyManagerTest {
 			throws AscException, KeyStoreException {
 		KeyManager manager = new KeyManager();
 		String alias = "TEST KEY";
+		
+		try{
+			PublicKey pk = TestController.keyStore.getPublicKey(alias);
+			if(pk != null)
+				return;
+		}catch(Exception e){
+			
+		}
 
 		RsaCipher rsa = new RsaCipher();
 		rsa.setStrength(2048);

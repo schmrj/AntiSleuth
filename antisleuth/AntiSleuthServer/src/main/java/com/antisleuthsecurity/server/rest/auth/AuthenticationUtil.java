@@ -59,6 +59,7 @@ public class AuthenticationUtil {
 			userid = rs.getInt("id");
 			account.setUserId(userid);
 			account.setUsername(rs.getString("username"));
+			account.setServerId(ASServer.serverId);
 		}
 
 		rs.close();

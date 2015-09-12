@@ -13,6 +13,7 @@ public class UserAccount implements Serializable {
 	private String password = null;
 	private byte[] salt = null;
 	private String emailAddress = null;
+	private String serverId = null;
 
 	public Integer getUserId() {
 		return userId;
@@ -52,6 +53,14 @@ public class UserAccount implements Serializable {
 
 	public void setSalt(byte[] salt) {
 		this.salt = salt;
+	}
+
+	public String getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
 	}
 
 }

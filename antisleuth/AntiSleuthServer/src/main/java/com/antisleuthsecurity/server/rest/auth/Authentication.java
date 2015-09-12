@@ -162,6 +162,7 @@ public class Authentication extends AsRestApi {
 
 						while (rs.next()) {
 							account.setUserId(rs.getInt("id"));
+							account.setServerId(ASServer.serverId);
 							response.setAccount(account);
 							response.setSuccess(true);
 						}
