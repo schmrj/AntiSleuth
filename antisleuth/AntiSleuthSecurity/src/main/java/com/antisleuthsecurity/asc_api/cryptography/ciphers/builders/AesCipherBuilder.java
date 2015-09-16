@@ -45,6 +45,7 @@ public class AesCipherBuilder {
 
 	public static interface SetInitializationVector {
 		SetKey setInitializationVector(byte[] iv);
+		SetKey generateIV() throws AscException;
 	}
 
 	public static interface SetKey {
@@ -119,6 +120,13 @@ public class AesCipherBuilder {
 
 		public SetKey setInitializationVector(byte[] iv) {
 			this.iv = iv;
+			return this;
+		}
+		
+		public SetKey generateIV() throws AscException {
+			AesCipher cipher = new AesCipher(this.strength);
+			this.cipher.setIv(cipher.generateIV());
+			this.iv = cipher.getIv();
 			return this;
 		}
 
